@@ -1,14 +1,15 @@
 <script lang="ts">
   import type { GraphConfig } from '#lib/types';
+  import { DEFAULT_CONFIG } from '#lib/constants/sampleData';
   import LayoutAndFontControls from './LayoutAndFontControls.svelte';
   import PercentSliderPopover from './PercentSliderPopover.svelte';
 
   let {
-    config,
-    onUpdateConfig
+    config = { ...DEFAULT_CONFIG },
+    onUpdateConfig = () => {}
   }: {
-    config: GraphConfig;
-    onUpdateConfig: (patch: Partial<GraphConfig>) => void;
+    config?: GraphConfig;
+    onUpdateConfig?: (patch: Partial<GraphConfig>) => void;
   } = $props();
 
   function clampInt(raw: number, min: number, max: number, fallback: number): number {
