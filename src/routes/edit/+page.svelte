@@ -12,6 +12,7 @@
     highlightStandaloneRowById,
     importStandaloneRows,
     removeStandaloneRow,
+    resetStandaloneSettings,
     setStandaloneExporting,
     standaloneHiddenEdgesStore,
     standaloneHiddenPeopleStore,
@@ -141,6 +142,7 @@
     <StandaloneConfigBar
       settings={$standaloneSettingsStore}
       onUpdateSettings={updateStandaloneSettings}
+      onResetSettings={resetStandaloneSettings}
     />
   </section>
 </main>

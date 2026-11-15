@@ -6,10 +6,12 @@
 
   let {
     config = { ...DEFAULT_CONFIG },
-    onUpdateConfig = () => {}
+    onUpdateConfig = () => {},
+    onResetConfig = () => {}
   }: {
     config?: GraphConfig;
     onUpdateConfig?: (patch: Partial<GraphConfig>) => void;
+    onResetConfig?: () => void;
   } = $props();
 
   let isDrawerOpen = $state(false);
@@ -127,7 +129,7 @@
       />
     </div>
 
-    <LayoutAndFontControls settings={config} onUpdate={onUpdateConfig} />
+    <LayoutAndFontControls settings={config} onUpdate={onUpdateConfig} onReset={onResetConfig} />
   </div>
 </footer>
 

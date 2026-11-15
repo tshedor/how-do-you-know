@@ -212,7 +212,7 @@ describe('GraphGenerator.generate', () => {
     );
 
     expect(graph.dot).toContain(
-      'node [shape=circle, fontsize=56, width=4.5, height=2, penwidth=3]'
+      'node [shape=circle, fontsize=56, width=4.5, height=2, fixedsize=false, penwidth=3]'
     );
     expect(graph.dot).toContain('edge [penwidth=5, style=tapered, fontsize=31]');
     expect(graph.dot).toContain('fontsize="56";');

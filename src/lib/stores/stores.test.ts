@@ -10,6 +10,7 @@ import {
   highlightGeneratorFirstRowForPerson,
   importGeneratorRows,
   removeGeneratorRow,
+  resetGeneratorConfig,
   selectGeneratorGraph,
   setGeneratorConfig,
   setGeneratorRows,
@@ -21,6 +22,7 @@ import {
   hydrateStandaloneState,
   highlightStandaloneRowById,
   importStandaloneRows,
+  resetStandaloneSettings,
   standaloneHiddenEdgesStore,
   standaloneHiddenPeopleStore,
   standaloneKnownNamesStore,
@@ -100,6 +102,23 @@ describe('generator state', () => {
     expect(get(generatorConfigStore).graphCount).toBe(4);
   });
 
+  it('resets generator settings and restores the row-derived graph count', () => {
+    const rows = Array.from({ length: 21 }, (_, index) => ({
+      id: `row-${index}`,
+      from: `Person ${index}`,
+      to: `Person ${index + 1}`,
+      relation: 'Connection'
+    }));
+    setGeneratorRows(rows);
+    updateGeneratorConfig({ graphCount: 4, nodeFontSize: 99, seed: 1 });
+
+    resetGeneratorConfig();
+    expect(get(generatorConfigStore)).toEqual({ ...DEFAULT_CONFIG, graphCount: 2 });
+
+    setGeneratorRows([]);
+    expect(get(generatorConfigStore).graphCount).toBe(1);
+  });
+
   it('appends imported generator connections', () => {
     importGeneratorRows([{ from: 'Alice', to: 'Bob', relation: 'Imported' }]);
     expect(get(generatorRowsStore)).toHaveLength(SAMPLE_ROWS.length + 1);
@@ -140,6 +159,14 @@ describe('standalone state', () => {
     importStandaloneRows([{ from: 'Alice', to: 'Bob', relation: 'Imported' }]);
     expect(get(standaloneRowsStore)).toHaveLength(SAMPLE_ROWS.length + 1);
     expect(get(standaloneRowsStore).at(-1)).toMatchObject({ relation: 'Imported' });
+  });
+
+  it('resets standalone page settings without changing rows', () => {
+    updateStandaloneSettings({ orientation: 'portrait', nodeFontSize: 99, exportFormat: 'DOT' });
+    resetStandaloneSettings();
+
+    expect(get(standaloneSettingsStore)).toEqual(DEFAULT_PAGE_SETTINGS);
+    expect(get(standaloneRowsStore)).toEqual(SAMPLE_ROWS);
   });
 
   it('toggles hidden people and edges and pulses highlights', () => {
