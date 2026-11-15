@@ -1,17 +1,13 @@
-import type { GeneratedGraph, PageExportSettings } from '#lib/types';
-
-export function initGeneratorUrlSync(): () => void {
-  return () => undefined;
-}
-
-export function initStandaloneUrlSync(): () => void {
-  return () => undefined;
-}
-
-export function buildStandaloneEditUrl(
-  _graph: GeneratedGraph,
-  _settings: PageExportSettings,
-  _basePath?: string
-): string {
-  return '/edit';
-}
+export {
+  GENERATOR_URL_PARAM,
+  STANDALONE_URL_PARAM,
+  buildStandaloneEditUrl,
+  decodeGeneratorState,
+  decodeStandaloneState,
+  decodeUrlPayload,
+  encodeGeneratorState,
+  encodeStandaloneState,
+  encodeUrlPayload,
+  type GeneratorUrlState
+} from './urlCodec';
+export { initGeneratorUrlSync, initStandaloneUrlSync } from './urlSync';
