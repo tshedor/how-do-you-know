@@ -1,13 +1,14 @@
 <script lang="ts">
   import type { PageExportSettings } from '#lib/types';
+  import { DEFAULT_PAGE_SETTINGS } from '#lib/constants/sampleData';
   import LayoutAndFontControls from './LayoutAndFontControls.svelte';
 
   let {
-    settings,
-    onUpdateSettings
+    settings = { ...DEFAULT_PAGE_SETTINGS },
+    onUpdateSettings = () => {}
   }: {
-    settings: PageExportSettings;
-    onUpdateSettings: (patch: Partial<PageExportSettings>) => void;
+    settings?: PageExportSettings;
+    onUpdateSettings?: (patch: Partial<PageExportSettings>) => void;
   } = $props();
 </script>
 
