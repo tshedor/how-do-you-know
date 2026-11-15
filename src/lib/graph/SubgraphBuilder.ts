@@ -8,6 +8,11 @@ export interface SubgraphResult {
   visibleEdgeRowIds: string[];
 }
 
+function getShownCount(total: number, hiddenRatio: number): number {
+  const shownRatio = 1 - Math.min(1, Math.max(0, hiddenRatio));
+  return Math.round(total * shownRatio);
+}
+
 export class SubgraphBuilder {
   build(
     rows: readonly RelationshipRow[],
@@ -47,12 +52,13 @@ export class SubgraphBuilder {
       selected.push(bridge);
     }
 
-    const people = [
-      ...new Set(selected.flatMap((row) => [row.from, row.to]))
-    ];
-    const visibleNode = people.filter(() => !rng.odds(config.hiddenNodeLabelRatio));
-    const visibleEdgeRowIds = selected
-      .filter(() => !rng.odds(config.hiddenEdgeLabelRatio))
+    const people = [...new Set(selected.flatMap((row) => [row.from, row.to]))];
+    const visibleNode = rng
+      .shuffle(people)
+      .slice(0, getShownCount(people.length, config.hiddenNodeLabelRatio));
+    const visibleEdgeRowIds = rng
+      .shuffle(selected)
+      .slice(0, getShownCount(selected.length, config.hiddenEdgeLabelRatio))
       .map((row) => row.id);
 
     return {

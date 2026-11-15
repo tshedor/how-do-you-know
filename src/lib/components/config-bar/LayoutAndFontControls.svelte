@@ -152,6 +152,7 @@
   .font-size-control input {
     width: 7rem;
     margin: 0;
+    background: var(--color-surface, #ffffff);
     accent-color: var(--color-primary, #16a34a);
     cursor: pointer;
   }

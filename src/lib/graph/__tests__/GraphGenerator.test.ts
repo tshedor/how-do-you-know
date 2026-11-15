@@ -139,6 +139,26 @@ describe('GraphGenerator.generate', () => {
     }
   });
 
+  it('shows exact graph-wide name and connection counts for a 20 percent ratio', () => {
+    const cycle = [
+      row('r1', 'A', 'B'),
+      row('r2', 'B', 'C'),
+      row('r3', 'C', 'D'),
+      row('r4', 'D', 'E'),
+      row('r5', 'E', 'A')
+    ];
+    const [graph] = generator.generate(
+      cycle,
+      config({ hiddenNodeLabelRatio: 0.8, hiddenEdgeLabelRatio: 0.8 })
+    );
+
+    expect(graph.rows).toHaveLength(5);
+    expect(graph.visibleNode).toHaveLength(1);
+    expect(graph.visibleEdgeRowIds).toHaveLength(1);
+    expect(graph.dot.match(/id="person:/g)).toHaveLength(1);
+    expect(graph.dot.match(/id="edge:/g)).toHaveLength(1);
+  });
+
   it('hides person labels and omits person IDs when hiddenNodeLabelRatio is 1', () => {
     const [graph] = generator.generate(
       [row('r1', 'Alice', 'Bob')],
