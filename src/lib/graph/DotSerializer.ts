@@ -43,8 +43,7 @@ export class DotSerializer {
     rows: readonly RelationshipRow[],
     settings: PageExportSettings,
     visibleNode: Iterable<string>,
-    visibleEdgeRowIds: Iterable<string>,
-    preserveHiddenEdgeSpace = false
+    visibleEdgeRowIds: Iterable<string>
   ): string {
     const [width, height] = getPageDimensions(settings.pageSize, settings.orientation);
     const visibleNodeSet = new Set(visibleNode);
@@ -80,11 +79,7 @@ export class DotSerializer {
       const escapedFrom = escapeDotString(row.from);
       const escapedTo = escapeDotString(row.to);
       const isEdgeVisible = visibleEdgeSet.has(row.id);
-      const preserveHiddenSpace = !isEdgeVisible && preserveHiddenEdgeSpace;
-      if (
-        (!isEdgeVisible && !preserveHiddenSpace) ||
-        (isEdgeVisible && row.relation.trim().length === 0)
-      ) {
+      if (isEdgeVisible && row.relation.trim().length === 0) {
         lines.push(`  "${escapedFrom}" -- "${escapedTo}" [tooltip=""];`);
         continue;
       }

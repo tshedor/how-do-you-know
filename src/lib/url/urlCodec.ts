@@ -29,8 +29,8 @@ const GRAPH_COUNT_RANGE = [1, 20] as const;
 const MAX_CONNECTIONS_RANGE = [1, 20] as const;
 const RATIO_RANGE = [0, 1] as const;
 const SEED_RANGE = [0, 0xffffffff] as const;
-const NODE_FONT_SIZE_RANGE = [1, 200] as const;
-const EDGE_FONT_SIZE_RANGE = [1, 200] as const;
+const NODE_FONT_SIZE_RANGE = [12, 124] as const;
+const EDGE_FONT_SIZE_RANGE = [12, 124] as const;
 
 function bytesToUrlBase64(bytes: Uint8Array): string {
   let binary = '';

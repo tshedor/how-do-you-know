@@ -151,7 +151,7 @@ describe('GraphGenerator.generate', () => {
     expect(graph.dot).not.toContain('person:');
   });
 
-  it('emits a direct edge early when an edge label is hidden or blank', () => {
+  it('emits a blank label node for hidden edges and a direct edge for blank visible labels', () => {
     const [hiddenGraph] = generator.generate(
       [row('hidden', 'Alice', 'Bob')],
       config({ hiddenEdgeLabelRatio: 1 })
@@ -162,8 +162,10 @@ describe('GraphGenerator.generate', () => {
     );
 
     expect(hiddenGraph.visibleEdgeRowIds).toEqual([]);
-    expect(hiddenGraph.dot).toContain('"Alice" -- "Bob" [tooltip=""];');
-    expect(hiddenGraph.dot).not.toContain('__label_hidden');
+    expect(hiddenGraph.dot).not.toContain('"Alice" -- "Bob" [tooltip=""];');
+    expect(hiddenGraph.dot).toContain('"__label_hidden" [label=" ", tooltip="", fontsize=38');
+    expect(hiddenGraph.dot).toContain('"Alice" -- "__label_hidden" [tooltip=""];');
+    expect(hiddenGraph.dot).not.toContain('id="edge:hidden"');
     expect(blankGraph.visibleEdgeRowIds).toEqual(['blank']);
     expect(blankGraph.dot).toContain('"Alice" -- "Bob" [tooltip=""];');
     expect(blankGraph.dot).not.toContain('__label_blank');

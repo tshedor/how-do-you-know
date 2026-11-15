@@ -118,3 +118,111 @@ a:focus-visible {
   min-height: 0;
   overflow: hidden;
 }
+
+.mobile-toolbar-toggle,
+.mobile-connections-toggle,
+.mobile-drawer-backdrop,
+.mobile-drawer-heading,
+.mobile-drawer-close {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .app-layout__left {
+    display: contents;
+  }
+
+  .app-layout__right {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .mobile-toolbar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 0.65rem;
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .mobile-toolbar-toggle:hover,
+  .mobile-toolbar-toggle:focus-visible {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .mobile-connections-toggle {
+    position: fixed;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    left: 1rem;
+    z-index: 75;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    padding: 0;
+    border: 2px solid rgb(255 255 255 / 85%);
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #ffffff;
+    box-shadow: 0 6px 22px rgb(22 163 74 / 38%), 0 2px 6px rgb(15 23 42 / 20%);
+  }
+
+  .mobile-connections-toggle:hover,
+  .mobile-connections-toggle:focus-visible {
+    background: var(--color-accent-hover);
+  }
+
+  .mobile-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: rgb(15 23 42 / 38%);
+    backdrop-filter: blur(2px);
+  }
+
+  .mobile-drawer-heading {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .mobile-drawer-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.45rem;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .mobile-drawer-close:hover {
+    background: var(--color-surface-subtle);
+    color: var(--color-text);
+  }
+}

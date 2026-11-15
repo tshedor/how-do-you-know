@@ -99,9 +99,9 @@
       {/if}
       <NameCombobox
         value={row.from}
-        options={knownNames}
+        options={knownNames.filter((name) => name.trim() !== row.to.trim())}
         placeholder="Name"
-        onChange={(val) => onUpdate({ from: val })}
+        onChange={(val) => onUpdate({ from: val.trim() === row.to.trim() ? '' : val })}
       />
     </div>
 
@@ -153,9 +153,9 @@
       {/if}
       <NameCombobox
         value={row.to}
-        options={knownNames}
+        options={knownNames.filter((name) => name.trim() !== row.from.trim())}
         placeholder="Name"
-        onChange={(val) => onUpdate({ to: val })}
+        onChange={(val) => onUpdate({ to: val.trim() === row.from.trim() ? '' : val })}
       />
     </div>
 
@@ -282,7 +282,7 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.12fr) 30px;
     gap: 8px;
     align-items: center;
-    padding: 7px 8px;
+    padding: 12px 20px;
   }
 
   .row-item__cell {
@@ -301,8 +301,9 @@
     min-width: 0;
     height: 36px;
     padding: 7px 9px;
-    border: 1px solid var(--color-border-strong);
-    border-radius: var(--radius-control);
+    border: 0;
+    border-bottom: 1px solid var(--color-border-strong);
+    border-radius: 0;
     outline: none;
     color: var(--color-text);
     font-size: 0.8125rem;
@@ -323,7 +324,7 @@
 
   .row-item__relation-input:focus {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgb(22 163 74 / 11%);
+    box-shadow: none;
   }
 
   .visibility-toggle,

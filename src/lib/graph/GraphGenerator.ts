@@ -68,8 +68,7 @@ export class GraphGenerator {
         selectedRows,
         settings,
         visibleNode,
-        visibleEdgeRowIds,
-        true
+        visibleEdgeRowIds
       )
     };
   }
