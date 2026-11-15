@@ -36,6 +36,13 @@
   let hiddenPeopleSet = $derived(new Set(hiddenPeople));
   let hiddenEdgeRowIdSet = $derived(new Set(hiddenEdgeRowIds));
   let rowsEl = $state<HTMLUListElement | null>(null);
+  let isDrawerOpen = $state(false);
+
+  function handleWindowKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      isDrawerOpen = false;
+    }
+  }
 
   async function advanceRowFocus(index: number): Promise<void> {
     if (index === rows.length - 1) {
@@ -47,7 +54,61 @@
   }
 </script>
 
-<aside class="left-pane" aria-label="Relationship editor">
+<svelte:window onkeydown={handleWindowKeydown} />
+
+<button
+  type="button"
+  class="mobile-connections-toggle"
+  aria-label="Edit connections"
+  aria-controls="connections-drawer"
+  aria-expanded={isDrawerOpen}
+  title="Edit connections"
+  onclick={() => (isDrawerOpen = true)}
+>
+  <svg
+    width="26"
+    height="26"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="7" cy="7" r="3" />
+    <circle cx="17" cy="17" r="3" />
+    <path d="m9.5 9.5 5 5" />
+  </svg>
+</button>
+{#if isDrawerOpen}
+  <button
+    type="button"
+    class="mobile-drawer-backdrop"
+    aria-label="Close connections drawer"
+    onclick={() => (isDrawerOpen = false)}
+  ></button>
+{/if}
+
+<aside
+  id="connections-drawer"
+  class="left-pane"
+  class:is-open={isDrawerOpen}
+  aria-label="Relationship editor"
+  role={isDrawerOpen ? 'dialog' : undefined}
+  aria-modal={isDrawerOpen ? true : undefined}
+>
+  <div class="mobile-drawer-heading">
+    <span>Connections</span>
+    <button
+      type="button"
+      class="mobile-drawer-close"
+      aria-label="Close connections drawer"
+      onclick={() => (isDrawerOpen = false)}
+    >
+      &times;
+    </button>
+  </div>
   <header class="left-pane__header">
     <div class="left-pane__columns" aria-hidden="true">
       <span>Person A</span>
@@ -121,7 +182,7 @@
     flex: 1 1 auto;
     min-height: 0;
     margin: 0;
-    padding: 9px 12px 190px;
+    padding: 0 0 190px;
     overflow-x: visible;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -183,4 +244,39 @@
     background: var(--color-accent-hover);
   }
 
+  @media (max-width: 48rem) {
+    .left-pane {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 100;
+      width: min(92vw, 26rem);
+      max-width: 100%;
+      height: 100dvh;
+      visibility: hidden;
+      box-shadow: 12px 0 32px rgb(15 23 42 / 20%);
+      transform: translateX(-105%);
+      transition:
+        transform 180ms ease,
+        visibility 180ms ease;
+    }
+
+    .left-pane.is-open {
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    .left-pane__header {
+      margin-top: 3.75rem;
+    }
+
+    .left-pane__footer {
+      padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (max-width: 48rem) and (prefers-reduced-motion: reduce) {
+    .left-pane {
+      transition: none;
+    }
+  }
 </style>

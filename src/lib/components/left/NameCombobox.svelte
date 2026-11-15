@@ -146,8 +146,9 @@
     min-width: 0;
     height: 36px;
     padding: 7px 9px;
-    border: 1px solid var(--color-border-strong);
-    border-radius: var(--radius-control);
+    border: 0;
+    border-bottom: 1px solid var(--color-border-strong);
+    border-radius: 0;
     outline: none;
     color: var(--color-text);
     font-size: 0.8125rem;
@@ -171,7 +172,7 @@
   .combobox > input:focus-visible {
     border-color: var(--color-accent);
     outline: none;
-    box-shadow: 0 0 0 3px rgb(22 163 74 / 11%);
+    box-shadow: none;
   }
 
   .combobox__dropdown {

@@ -23,7 +23,7 @@
     updateStandaloneRow,
     updateStandaloneSettings
   } from '#lib/stores/standaloneState';
-  import type { RenderedGraph } from '#lib/types';
+  import type { ExportFormat, RenderedGraph } from '#lib/types';
   import { initStandaloneUrlSync } from '#lib/url/urlSync';
   import { renderGraphToSvg } from '#lib/viz';
 
@@ -71,7 +71,7 @@
     };
   });
 
-  async function handleViewSingle(): Promise<void> {
+  async function handleViewSingle(format: ExportFormat): Promise<void> {
     const graph = renderedGraph;
     if (!graph || $standaloneUiStore.isExporting) return;
 
@@ -79,7 +79,11 @@
     setStandaloneExporting(true);
     errorMessage = null;
     try {
-      await openSingleGraphInTab(graph, $standaloneSettingsStore, win);
+      await openSingleGraphInTab(
+        graph,
+        { ...$standaloneSettingsStore, exportFormat: format },
+        win
+      );
     } catch (error) {
       win?.close();
       errorMessage = error instanceof Error ? error.message : 'Unable to export graph.';
@@ -112,11 +116,10 @@
   </div>
   <section class="app-layout__right">
     <RightActionHeader
-      exportFormat={$standaloneSettingsStore.exportFormat}
       isExporting={$standaloneUiStore.isExporting}
       showGeneratorActions={false}
+      canViewGraph={renderedGraph !== null}
       onViewFormat={handleViewSingle}
-      onSelectFormat={(exportFormat) => updateStandaloneSettings({ exportFormat })}
     />
     <GraphCanvas
       graph={renderedGraph}

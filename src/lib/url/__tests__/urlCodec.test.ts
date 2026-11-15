@@ -79,7 +79,7 @@ describe('generator state codec', () => {
       pageSize: '8.5x11',
       orientation: 'landscape',
       exportFormat: 'PNG',
-      nodeFontSize: 200,
+      nodeFontSize: 124,
       edgeFontSize: DEFAULT_PAGE_SETTINGS.edgeFontSize,
       graphCount: 20,
       maxConnectionsPerNode: 1,
@@ -156,7 +156,7 @@ describe('standalone state codec', () => {
       pageSize: '8.5x11',
       orientation: 'landscape',
       exportFormat: 'PNG',
-      nodeFontSize: 1,
+      nodeFontSize: 12,
       edgeFontSize: DEFAULT_PAGE_SETTINGS.edgeFontSize
     });
   });

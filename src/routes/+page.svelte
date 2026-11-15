@@ -6,7 +6,7 @@
   import LeftPane from '#lib/components/left/LeftPane.svelte';
   import GraphCanvas from '#lib/components/viewer/GraphCanvas.svelte';
   import ThumbnailStrip from '#lib/components/viewer/ThumbnailStrip.svelte';
-  import { downloadGraphsZip } from '#lib/export';
+  import { downloadGraphsZip, openSingleGraphInTab } from '#lib/export';
   import { GraphGenerator } from '#lib/graph/GraphGenerator';
   import {
     addGeneratorRow,
@@ -24,7 +24,7 @@
     updateGeneratorConfig,
     updateGeneratorRow
   } from '#lib/stores/generatorState';
-  import type { GeneratedGraph, RenderedGraph } from '#lib/types';
+  import type { ExportFormat, GeneratedGraph, RenderedGraph } from '#lib/types';
   import { buildStandaloneEditUrl } from '#lib/url/urlCodec';
   import { initGeneratorUrlSync } from '#lib/url/urlSync';
   import { renderAllDotsToSvg, renderGraphToSvg } from '#lib/viz';
@@ -90,7 +90,7 @@
     window.open(url, '_blank');
   }
 
-  async function viewFormat(): Promise<void> {
+  async function exportGraphs(): Promise<void> {
     if ($generatorUiStore.isExporting || renderedGraphs.length === 0) return;
     setGeneratorExporting(true);
     errorMessage = null;
@@ -98,6 +98,27 @@
       await downloadGraphsZip(renderedGraphs, renderedViewAll, $generatorConfigStore);
     } catch (error) {
       errorMessage = error instanceof Error ? error.message : 'Unable to export the graphs.';
+    } finally {
+      setGeneratorExporting(false);
+    }
+  }
+
+  async function viewCurrentGraph(format: ExportFormat): Promise<void> {
+    const graph = displayedGraph;
+    if (!graph || $generatorUiStore.isExporting) return;
+
+    const win = window.open('', '_blank');
+    setGeneratorExporting(true);
+    errorMessage = null;
+    try {
+      await openSingleGraphInTab(
+        graph,
+        { ...$generatorConfigStore, exportFormat: format },
+        win
+      );
+    } catch (error) {
+      win?.close();
+      errorMessage = error instanceof Error ? error.message : 'Unable to view the graph.';
     } finally {
       setGeneratorExporting(false);
     }
@@ -127,11 +148,13 @@
       isExporting={$generatorUiStore.isExporting}
       showGeneratorActions={true}
       canExportStandalone={displayedGraph !== null}
+      canViewGraph={displayedGraph !== null}
       isViewingAll={$generatorUiStore.isViewingAll}
       onReshuffle={reshuffleGeneratorSeed}
       onExportStandalone={exportStandalone}
+      onExportGraphs={exportGraphs}
       onToggleViewAll={toggleGeneratorViewAll}
-      onViewFormat={viewFormat}
+      onViewFormat={viewCurrentGraph}
       onSelectFormat={(format) => updateGeneratorConfig({ exportFormat: format })}
     />
     <ThumbnailStrip

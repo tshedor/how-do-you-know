@@ -3,12 +3,16 @@
 
   let {
     format,
+    actionLabel = 'View',
+    secondary = false,
     isExporting = false,
     disabled = false,
     onAction,
     onSelectFormat
   }: {
     format: ExportFormat;
+    actionLabel?: string;
+    secondary?: boolean;
     isExporting?: boolean;
     disabled?: boolean;
     onAction: () => void;
@@ -41,21 +45,21 @@
 
 <svelte:window onpointerdown={handleWindowPointerDown} onkeydown={handleWindowKeydown} />
 
-<div class="split-cta" bind:this={rootEl}>
+<div class="split-cta" class:is-secondary={secondary} bind:this={rootEl}>
   <button
     type="button"
     class="action-btn split-cta__main"
     disabled={disabled}
     onclick={() => onAction()}
   >
-    {isExporting ? 'Generating...' : `View ${format}`}
+    {isExporting ? 'Generating...' : `${actionLabel} ${format}`}
   </button>
   <button
     type="button"
     class="action-btn split-cta__trigger"
     aria-haspopup="menu"
     aria-expanded={menuOpen}
-    aria-label="Choose export format"
+    aria-label={`Choose ${actionLabel.toLowerCase()} format`}
     disabled={disabled}
     onclick={() => (menuOpen = !menuOpen)}
   >
@@ -115,6 +119,12 @@
     flex: 0 0 auto;
   }
 
+  .split-cta.is-secondary .action-btn {
+    border-color: var(--color-primary, #16a34a);
+    background: var(--color-surface, #ffffff);
+    color: var(--color-primary, #15803d);
+  }
+
   .action-btn {
     display: inline-flex;
     align-items: center;
@@ -151,6 +161,12 @@
   .action-btn:hover:not(:disabled) {
     border-color: var(--color-primary-hover, #15803d);
     background: var(--color-primary-hover, #15803d);
+  }
+
+  .split-cta.is-secondary .action-btn:hover:not(:disabled) {
+    border-color: var(--color-primary, #16a34a);
+    background: var(--color-primary-soft, #eafbef);
+    color: var(--color-primary-hover, #15803d);
   }
 
   .action-btn:focus-visible {

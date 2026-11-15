@@ -21,6 +21,6 @@ export const DEFAULT_CONFIG: GraphConfig = {
   graphCount: 1,
   maxConnectionsPerNode: 4,
   hiddenEdgeLabelRatio: 0,
-  hiddenNodeLabelRatio: 0,
+  hiddenNodeLabelRatio: 0.8,
   seed: 123456789
 };

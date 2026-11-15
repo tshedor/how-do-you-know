@@ -19,14 +19,14 @@
   function handleNodeFontSizeInput(event: Event): void {
     const input = event.currentTarget as HTMLInputElement;
     onUpdate({
-      nodeFontSize: clampInt(Number.parseFloat(input.value), 12, 120, 42)
+      nodeFontSize: clampInt(Number.parseFloat(input.value), 12, 124, 42)
     });
   }
 
   function handleEdgeFontSizeInput(event: Event): void {
     const input = event.currentTarget as HTMLInputElement;
     onUpdate({
-      edgeFontSize: clampInt(Number.parseFloat(input.value), 10, 120, 38)
+      edgeFontSize: clampInt(Number.parseFloat(input.value), 12, 124, 38)
     });
   }
 
@@ -40,29 +40,35 @@
 </script>
 
 <label class="config-field">
-  <span class="config-field__label">Node Font Size</span>
-  <input
-    type="number"
-    min="12"
-    max="120"
-    step="1"
-    value={settings.nodeFontSize}
-    aria-label="Node font size"
-    oninput={handleNodeFontSizeInput}
-  />
+  <span class="config-field__label">Name Font Size</span>
+  <div class="font-size-control">
+    <input
+      type="range"
+      min="12"
+      max="124"
+      step="1"
+      value={settings.nodeFontSize}
+      aria-label="Name font size"
+      oninput={handleNodeFontSizeInput}
+    />
+    <output aria-label="Name font size in points">{settings.nodeFontSize}</output>
+  </div>
 </label>
 
 <label class="config-field">
-  <span class="config-field__label">Edge Font Size</span>
-  <input
-    type="number"
-    min="10"
-    max="120"
-    step="1"
-    value={settings.edgeFontSize}
-    aria-label="Edge font size"
-    oninput={handleEdgeFontSizeInput}
-  />
+  <span class="config-field__label">Connection Font Size</span>
+  <div class="font-size-control">
+    <input
+      type="range"
+      min="12"
+      max="124"
+      step="1"
+      value={settings.edgeFontSize}
+      aria-label="Connection font size"
+      oninput={handleEdgeFontSizeInput}
+    />
+    <output aria-label="Connection font size in points">{settings.edgeFontSize}</output>
+  </div>
 </label>
 
 <label class="config-field">
@@ -124,38 +130,52 @@
     white-space: nowrap;
   }
 
-  .config-field input,
   .config-field select {
+    min-width: 6.75rem;
     height: 2.35rem;
-    padding: 0.4rem 0.5rem;
+    padding: 0.4rem 1.75rem 0.4rem 0.5rem;
     border: 1px solid var(--color-border, #d5dce4);
     border-radius: 0.45rem;
     background: var(--color-surface, #ffffff);
     color: var(--color-text, #243447);
     font-size: 0.8125rem;
-  }
-
-  .config-field input {
-    width: 4.75rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .config-field select {
-    min-width: 6.75rem;
-    padding-right: 1.75rem;
     cursor: pointer;
   }
 
-  .config-field input:hover,
+  .font-size-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.35rem;
+  }
+
+  .font-size-control input {
+    width: 7rem;
+    margin: 0;
+    accent-color: var(--color-primary, #16a34a);
+    cursor: pointer;
+  }
+
+  .font-size-control output {
+    min-width: 2rem;
+    color: var(--color-text, #243447);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
   .config-field select:hover {
     border-color: var(--color-text-muted, #94a3b8);
   }
 
-  .config-field input:focus-visible,
+  .config-field select:focus-visible,
+  .font-size-control input:focus-visible {
+    outline: 2px solid var(--color-primary-soft, #eafbef);
+    outline-offset: 2px;
+  }
+
   .config-field select:focus-visible {
     border-color: var(--color-primary, #16a34a);
-    outline: 2px solid var(--color-primary-soft, #eafbef);
-    outline-offset: 0;
   }
 
   .orientation-group {
@@ -215,4 +235,14 @@
     stroke-width: 1.5;
   }
 
+  @media (max-width: 48rem) {
+    .config-field input,
+    .config-field select {
+      width: 100%;
+    }
+
+    .orientation-group {
+      align-self: flex-start;
+    }
+  }
 </style>
