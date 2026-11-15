@@ -77,3 +77,64 @@
 
   <LayoutAndFontControls settings={config} onUpdate={onUpdateConfig} />
 </footer>
+
+<style>
+  .config-bar {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--color-border, #dfe4ea);
+    background: var(--color-surface, #ffffff);
+    box-shadow: 0 -4px 16px rgb(15 23 42 / 4%);
+  }
+
+  .config-field {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .config-field__label {
+    color: var(--color-text-muted, #64748b);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .config-field input {
+    width: 4.75rem;
+    height: 2.35rem;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--color-border, #d5dce4);
+    border-radius: 0.45rem;
+    background: var(--color-surface, #ffffff);
+    color: var(--color-text, #243447);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .config-field input:hover {
+    border-color: var(--color-text-muted, #94a3b8);
+  }
+
+  .config-field input:focus-visible {
+    border-color: var(--color-primary, #2563eb);
+    outline: 2px solid var(--color-primary-soft, #dbeafe);
+    outline-offset: 0;
+  }
+
+  @media (max-width: 48rem) {
+    .config-bar {
+      gap: 0.625rem 0.75rem;
+      padding: 0.625rem 0.75rem;
+    }
+  }
+</style>

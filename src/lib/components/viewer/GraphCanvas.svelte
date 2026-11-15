@@ -54,3 +54,91 @@
     <p class="graph-canvas__status">No graph to display.</p>
   {/if}
 </div>
+
+<style>
+  .graph-canvas {
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    padding: 1.5rem;
+    overflow: auto;
+    background: var(--color-canvas, #edf1f5);
+  }
+
+  .graph-canvas__stage {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--color-border, #d5dce4);
+    background: #ffffff;
+    box-shadow:
+      0 2px 5px rgb(15 23 42 / 8%),
+      0 14px 35px rgb(15 23 42 / 8%);
+    transition: opacity 150ms ease;
+  }
+
+  .graph-canvas__stage :global(svg) {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+  }
+
+  .graph-canvas__stage :global(svg g[id^='person:']),
+  .graph-canvas__stage :global(svg g[id^='edge:']) {
+    cursor: pointer;
+  }
+
+  .graph-canvas__stage :global(svg g[id^='person:']:hover),
+  .graph-canvas__stage :global(svg g[id^='edge:']:hover) {
+    opacity: 0.78;
+  }
+
+  .graph-canvas[aria-busy='true'] .graph-canvas__stage {
+    opacity: 0.6;
+  }
+
+  .graph-canvas__status {
+    z-index: 2;
+    max-width: min(32rem, 90%);
+    margin: 0;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--color-border, #dfe4ea);
+    border-radius: 0.55rem;
+    background: var(--color-surface, #ffffff);
+    color: var(--color-text-muted, #64748b);
+    box-shadow: 0 5px 18px rgb(15 23 42 / 10%);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  .graph-canvas__stage + .graph-canvas__status {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .graph-canvas__status[role='alert'] {
+    border-color: var(--color-danger, #dc2626);
+    color: var(--color-danger, #b91c1c);
+  }
+
+  @media (max-width: 48rem) {
+    .graph-canvas {
+      padding: 0.75rem;
+    }
+  }
+</style>
