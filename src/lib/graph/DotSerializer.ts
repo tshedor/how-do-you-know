@@ -54,7 +54,7 @@ export class DotSerializer {
       `  size="${width},${height}!";`,
       '  ratio="fill";',
       '  margin=0;',
-      `  node [shape=circle, fontsize=${settings.nodeFontSize}, width=4.5, height=2, penwidth=3]`,
+      `  node [shape=circle, fontsize=${settings.nodeFontSize}, width=4.5, height=2, fixedsize=false, penwidth=3]`,
       `  edge [penwidth=5, style=tapered, fontsize=${settings.edgeFontSize}]`,
       `  fontsize="${settings.nodeFontSize}";`,
       '  labeljust="l";',

@@ -87,6 +87,15 @@
       </button>
     </div>
     {#if showGeneratorActions}
+      <button
+        type="button"
+        class="action-btn view-all-btn"
+        class:is-active={isViewingAll}
+        aria-pressed={isViewingAll}
+        onclick={() => onToggleViewAll?.()}
+      >
+        View All
+      </button>
       <button type="button" class="action-btn" onclick={() => onReshuffle?.()}>
         <svg
           width="16"
@@ -103,15 +112,6 @@
           <path d="M2 4h9M8 1l3 3-3 3M14 12H5M8 15l-3-3 3-3" />
         </svg>
         Reshuffle
-      </button>
-      <button
-        type="button"
-        class="action-btn view-all-btn"
-        class:is-active={isViewingAll}
-        aria-pressed={isViewingAll}
-        onclick={() => onToggleViewAll?.()}
-      >
-        View All
       </button>
       <button
         type="button"
@@ -215,6 +215,10 @@
     outline-offset: 2px;
   }
 
+  .view-all-btn {
+    margin-right: auto;
+  }
+
   .view-all-btn.is-active {
     border-color: var(--color-primary, #16a34a);
     background: var(--color-primary-soft, #eafbef);
@@ -272,6 +276,11 @@
 
     .right-action-header__content .action-btn {
       width: 100%;
+    }
+
+    .right-action-header__content .view-all-btn {
+      margin-right: 0;
+      margin-bottom: 0.5rem;
     }
 
     .right-action-header__content :global(.split-cta) {

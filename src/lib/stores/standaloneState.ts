@@ -84,6 +84,10 @@ export function updateStandaloneSettings(patch: Partial<PageExportSettings>): vo
   standaloneSettingsStore.update((settings) => ({ ...settings, ...patch }));
 }
 
+export function resetStandaloneSettings(): void {
+  standaloneSettingsStore.set({ ...DEFAULT_PAGE_SETTINGS });
+}
+
 export function hydrateStandaloneState(state: StandaloneState): void {
   standaloneRowsStore.set(copyRows(state.rows));
   standaloneHiddenPeopleStore.set([...state.hiddenPeople]);

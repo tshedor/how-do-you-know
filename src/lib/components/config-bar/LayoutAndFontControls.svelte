@@ -3,10 +3,12 @@
 
   let {
     settings,
-    onUpdate
+    onUpdate,
+    onReset
   }: {
     settings: PageExportSettings;
     onUpdate: (patch: Partial<PageExportSettings>) => void;
+    onReset: () => void;
   } = $props();
 
   const PAGE_SIZES = ['8.5x11', '11x17', '8.3x11.7'] as const;
@@ -48,6 +50,7 @@
       max="124"
       step="1"
       value={settings.nodeFontSize}
+      style:--range-progress={`${((settings.nodeFontSize - 12) / 112) * 100}%`}
       aria-label="Name font size"
       oninput={handleNodeFontSizeInput}
     />
@@ -64,6 +67,7 @@
       max="124"
       step="1"
       value={settings.edgeFontSize}
+      style:--range-progress={`${((settings.edgeFontSize - 12) / 112) * 100}%`}
       aria-label="Connection font size"
       oninput={handleEdgeFontSizeInput}
     />
@@ -112,6 +116,15 @@
     </svg>
   </button>
 </div>
+
+<button
+  type="button"
+  class="reset-settings-btn"
+  aria-label="Reset settings to defaults"
+  onclick={onReset}
+>
+  Reset
+</button>
 
 <style>
   .config-field {
@@ -236,6 +249,23 @@
     stroke-width: 1.5;
   }
 
+  .reset-settings-btn {
+    align-self: flex-end;
+    min-height: 2.35rem;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--color-border, #d5dce4);
+    border-radius: 0.45rem;
+    background: var(--color-surface, #ffffff);
+    color: var(--color-text-muted, #64748b);
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .reset-settings-btn:hover {
+    border-color: var(--color-primary, #16a34a);
+    color: var(--color-primary, #15803d);
+  }
+
   @media (max-width: 48rem) {
     .config-field input,
     .config-field select {
@@ -244,6 +274,10 @@
 
     .orientation-group {
       align-self: flex-start;
+    }
+
+    .reset-settings-btn {
+      width: 100%;
     }
   }
 </style>

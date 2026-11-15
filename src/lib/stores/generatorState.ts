@@ -99,6 +99,13 @@ export function setGeneratorConfig(config: GraphConfig): void {
   generatorConfigStore.set({ ...config });
 }
 
+export function resetGeneratorConfig(): void {
+  setGeneratorConfig({
+    ...DEFAULT_CONFIG,
+    graphCount: getDefaultGraphCount(get(generatorRowsStore).length)
+  });
+}
+
 export function reshuffleGeneratorSeed(): void {
   const seed = Math.floor(Math.random() * 0x100000000);
   updateGeneratorConfig({ seed });

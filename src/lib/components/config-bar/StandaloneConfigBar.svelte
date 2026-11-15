@@ -5,10 +5,12 @@
 
   let {
     settings = { ...DEFAULT_PAGE_SETTINGS },
-    onUpdateSettings = () => {}
+    onUpdateSettings = () => {},
+    onResetSettings = () => {}
   }: {
     settings?: PageExportSettings;
     onUpdateSettings?: (patch: Partial<PageExportSettings>) => void;
+    onResetSettings?: () => void;
   } = $props();
 
   let isDrawerOpen = $state(false);
@@ -65,7 +67,7 @@
         &times;
       </button>
     </div>
-    <LayoutAndFontControls {settings} onUpdate={onUpdateSettings} />
+    <LayoutAndFontControls {settings} onUpdate={onUpdateSettings} onReset={onResetSettings} />
   </div>
 </footer>
 

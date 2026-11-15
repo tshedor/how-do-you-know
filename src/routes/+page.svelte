@@ -18,6 +18,7 @@
     highlightGeneratorRowById,
     importGeneratorRows,
     removeGeneratorRow,
+    resetGeneratorConfig,
     reshuffleGeneratorSeed,
     selectGeneratorGraph,
     setGeneratorExporting,
@@ -180,6 +181,10 @@
       onPersonClick={highlightGeneratorFirstRowForPerson}
       onEdgeClick={highlightGeneratorRowById}
     />
-    <GeneratorConfigBar config={$generatorConfigStore} onUpdateConfig={updateGeneratorConfig} />
+    <GeneratorConfigBar
+      config={$generatorConfigStore}
+      onUpdateConfig={updateGeneratorConfig}
+      onResetConfig={resetGeneratorConfig}
+    />
   </section>
 </main>

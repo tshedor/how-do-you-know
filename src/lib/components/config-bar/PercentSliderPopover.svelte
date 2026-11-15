@@ -70,6 +70,7 @@
           max="1"
           step="0.01"
           value={value}
+          style:--range-progress={`${value * 100}%`}
           aria-label={label}
           oninput={handleRangeInput}
         />
