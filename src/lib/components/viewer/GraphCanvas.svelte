@@ -60,8 +60,12 @@
     };
   }
 
+  function isMobileViewport(): boolean {
+    return window.matchMedia('(max-width: 48rem)').matches;
+  }
+
   function handleWheel(event: WheelEvent): void {
-    if (!graph) return;
+    if (!graph || isMobileViewport()) return;
     event.preventDefault();
     const factor = event.deltaY > 0 ? 1.05 : 1 / 1.05;
     zoom = Math.min(8, Math.max(0.25, zoom * factor));
@@ -75,7 +79,14 @@
 
   function handlePointerDown(event: PointerEvent): void {
     const viewport = event.currentTarget;
-    if (!graph || event.button !== 0 || !(viewport instanceof HTMLDivElement)) return;
+    if (
+      !graph ||
+      isMobileViewport() ||
+      event.button !== 0 ||
+      !(viewport instanceof HTMLDivElement)
+    ) {
+      return;
+    }
     activePointerId = event.pointerId;
     lastPointerX = event.clientX;
     lastPointerY = event.clientY;
@@ -118,7 +129,7 @@
 <div
   class="graph-canvas"
   aria-busy={isRendering}
-  aria-label="Interactive graph preview. Scroll to zoom and drag to pan."
+  aria-label="Interactive graph preview"
   role="region"
   data-panning={isPanning}
   use:stageClickAction
@@ -276,5 +287,15 @@
   .graph-canvas__status[role='alert'] {
     border-color: var(--color-danger, #dc2626);
     color: var(--color-danger, #b91c1c);
+  }
+
+  @media (max-width: 48rem) {
+    .graph-canvas {
+      cursor: default;
+    }
+
+    .graph-canvas__reset {
+      display: none;
+    }
   }
 </style>

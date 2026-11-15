@@ -99,14 +99,14 @@
     </label>
 
     <label class="config-field">
-      <span class="config-field__label">Max Relationships<br />per Person</span>
+      <span class="config-field__label">Max Relationships</span>
       <input
         type="number"
         min="1"
         max="20"
         step="1"
         value={config.maxConnectionsPerNode}
-        aria-label="Max relationships per person"
+        aria-label="Max relationships"
         oninput={handleMaxConnectionsInput}
       />
     </label>
@@ -121,9 +121,9 @@
 
     <div class="config-field">
       <PercentSliderPopover
-        label="Hidden Names"
-        value={config.hiddenNodeLabelRatio}
-        onChange={(val) => onUpdateConfig({ hiddenNodeLabelRatio: val })}
+        label="Shown Names"
+        value={1 - config.hiddenNodeLabelRatio}
+        onChange={(val) => onUpdateConfig({ hiddenNodeLabelRatio: 1 - val })}
       />
     </div>
 

@@ -189,8 +189,8 @@
     <div class="left-pane__columns" aria-hidden="true">
       <span>Person A</span>
       <span>Person B</span>
-      <span>Relationship</span>
       <span></span>
+      <span class="left-pane__relationship-heading">Relationship</span>
     </div>
   </header>
 
@@ -274,7 +274,7 @@
 
   .left-pane__columns {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.12fr) 30px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 30px;
     gap: 8px;
     align-items: center;
     color: var(--color-text-muted);
@@ -283,6 +283,11 @@
     letter-spacing: 0.055em;
     line-height: 1.2;
     text-transform: uppercase;
+  }
+
+  .left-pane__relationship-heading {
+    grid-column: 1 / 3;
+    margin-left: 20px;
   }
 
   .left-pane__rows {

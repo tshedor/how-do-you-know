@@ -279,7 +279,7 @@
 
   .row-item__columns {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.12fr) 30px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 30px;
     gap: 8px;
     align-items: center;
     padding: 12px 20px;
@@ -292,7 +292,15 @@
     min-width: 0;
   }
 
+  .row-item__cell--relation {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    margin-left: 20px;
+  }
+
   .row-item__cell--actions {
+    grid-column: 3;
+    grid-row: 1;
     justify-content: center;
   }
 
