@@ -7,7 +7,7 @@
   import GraphCanvas from '#lib/components/viewer/GraphCanvas.svelte';
   import ThumbnailStrip from '#lib/components/viewer/ThumbnailStrip.svelte';
   import { downloadGraphsZip } from '#lib/export';
-  import { PartyMapGenerator } from '#lib/graph';
+  import { GraphGenerator } from '#lib/graph/GraphGenerator';
   import {
     addGeneratorRow,
     generatorConfigStore,
@@ -25,11 +25,12 @@
     updateGeneratorRow
   } from '#lib/stores/generatorState';
   import type { GeneratedGraph, RenderedGraph } from '#lib/types';
-  import { buildStandaloneEditUrl, initGeneratorUrlSync } from '#lib/url';
+  import { buildStandaloneEditUrl } from '#lib/url/urlCodec';
+  import { initGeneratorUrlSync } from '#lib/url/urlSync';
   import { renderAllDotsToSvg, renderGraphToSvg } from '#lib/viz';
 
   const { base } = appPaths as typeof appPaths & { base: string };
-  const generator = new PartyMapGenerator();
+  const generator = new GraphGenerator();
 
   let generatedGraphs = $derived(
     generator.generate($generatorRowsStore, $generatorConfigStore)

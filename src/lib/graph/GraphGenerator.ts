@@ -12,7 +12,7 @@ function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-export class PartyMapGenerator {
+export class GraphGenerator {
   private readonly subgraphBuilder = new SubgraphBuilder();
   private readonly dotSerializer = new DotSerializer();
 
@@ -25,12 +25,12 @@ export class PartyMapGenerator {
       return {
         index,
         rows: subgraph.rows,
-        visiblePeople: subgraph.visiblePeople,
+        visibleNode: subgraph.visibleNode,
         visibleEdgeRowIds: subgraph.visibleEdgeRowIds,
         dot: this.dotSerializer.serialize(
           subgraph.rows,
           config,
-          subgraph.visiblePeople,
+          subgraph.visibleNode,
           subgraph.visibleEdgeRowIds
         )
       };
@@ -40,7 +40,7 @@ export class PartyMapGenerator {
   buildStandalone(
     rows: RelationshipRow[],
     settings: PageExportSettings,
-    hiddenPeople: Iterable<string>,
+    hiddenNode: Iterable<string>,
     hiddenEdgeRowIds: Iterable<string>
   ): GeneratedGraph {
     const selectedRows = rows
@@ -51,10 +51,10 @@ export class PartyMapGenerator {
           row.from.trim() !== row.to.trim()
       )
       .map((row) => ({ ...row }));
-    const hiddenPeopleSet = new Set(hiddenPeople);
+    const hiddenNodeSet = new Set(hiddenNode);
     const hiddenEdgeSet = new Set(hiddenEdgeRowIds);
     const people = [...new Set(selectedRows.flatMap((row) => [row.from, row.to]))];
-    const visiblePeople = people.filter((person) => !hiddenPeopleSet.has(person));
+    const visibleNode = people.filter((person) => !hiddenNodeSet.has(person));
     const visibleEdgeRowIds = selectedRows
       .filter((row) => !hiddenEdgeSet.has(row.id))
       .map((row) => row.id);
@@ -62,12 +62,12 @@ export class PartyMapGenerator {
     return {
       index: 0,
       rows: selectedRows,
-      visiblePeople,
+      visibleNode,
       visibleEdgeRowIds,
       dot: this.dotSerializer.serialize(
         selectedRows,
         settings,
-        visiblePeople,
+        visibleNode,
         visibleEdgeRowIds
       )
     };

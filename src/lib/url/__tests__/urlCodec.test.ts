@@ -174,7 +174,7 @@ describe('buildStandaloneEditUrl', () => {
       index: 0,
       dot: 'strict graph G {}',
       rows: SAMPLE_ROWS,
-      visiblePeople: ['Alice', 'Bob', 'Dan', 'Stan'],
+      visibleNode: ['Alice', 'Bob', 'Dan', 'Stan'],
       visibleEdgeRowIds: ['sample-1', 'sample-4']
     };
 
@@ -194,7 +194,7 @@ describe('buildStandaloneEditUrl', () => {
       index: 0,
       dot: '',
       rows: [],
-      visiblePeople: [],
+      visibleNode: [],
       visibleEdgeRowIds: []
     };
 
