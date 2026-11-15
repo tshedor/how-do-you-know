@@ -41,6 +41,7 @@ describe('generator state', () => {
       selectedGraphIndex: 0,
       isViewingAll: false,
       highlightedRowId: null,
+      focusField: null,
       highlightPulse: 0,
       isExporting: false
     });
@@ -71,7 +72,11 @@ describe('generator state', () => {
     expect(get(generatorUiStore)).toMatchObject({ selectedGraphIndex: 0, isViewingAll: false });
 
     highlightGeneratorFirstRowForPerson('Alice');
-    expect(get(generatorUiStore)).toMatchObject({ highlightedRowId: 'sample-1', highlightPulse: 1 });
+    expect(get(generatorUiStore)).toMatchObject({
+      highlightedRowId: 'sample-1',
+      focusField: 'to',
+      highlightPulse: 1
+    });
   });
 
   it('defaults graph count to rows divided by 20 until manually overridden', () => {
@@ -149,6 +154,10 @@ describe('standalone state', () => {
     expect(get(standaloneHiddenEdgesStore)).toEqual([]);
 
     highlightStandaloneRowById('sample-2');
-    expect(get(standaloneUiStore)).toMatchObject({ highlightedRowId: 'sample-2', highlightPulse: 1 });
+    expect(get(standaloneUiStore)).toMatchObject({
+      highlightedRowId: 'sample-2',
+      focusField: 'relation',
+      highlightPulse: 1
+    });
   });
 });

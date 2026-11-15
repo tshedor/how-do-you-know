@@ -19,7 +19,7 @@
     onSelectFormat: (fmt: ExportFormat) => void;
   } = $props();
 
-  const formatOptions: ExportFormat[] = ['PNG', 'SVG'];
+  const formatOptions: ExportFormat[] = ['PNG', 'SVG', 'DOT'];
 
   let menuOpen = $state(false);
   let rootEl = $state<HTMLDivElement>();

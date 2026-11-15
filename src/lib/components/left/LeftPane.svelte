@@ -1,7 +1,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import { parseRelationshipsCsv, type RelationshipCsvRow } from '#lib/csv';
-  import type { RelationshipRow } from '#lib/types';
+  import type { RelationshipField, RelationshipRow } from '#lib/types';
   import RelationshipRowItem from './RelationshipRowItem.svelte';
 
   const MIN_PANE_WIDTH = 340;
@@ -11,6 +11,7 @@
     rows?: RelationshipRow[];
     knownNames?: string[];
     highlightedRowId?: string | null;
+    focusField?: RelationshipField | null;
     highlightPulse?: number;
     showVisibilityToggles?: boolean;
     hiddenPeople?: readonly string[];
@@ -28,6 +29,7 @@
     rows = [],
     knownNames = [],
     highlightedRowId = null,
+    focusField = null,
     highlightPulse = 0,
     showVisibilityToggles = false,
     hiddenPeople = [],
@@ -51,6 +53,17 @@
   let resizePointerId: number | null = null;
   let resizeStartX = 0;
   let resizeStartWidth = 0;
+
+  $effect(() => {
+    if (
+      highlightedRowId &&
+      focusField &&
+      highlightPulse > 0 &&
+      window.matchMedia('(max-width: 48rem)').matches
+    ) {
+      isDrawerOpen = true;
+    }
+  });
 
   function handleWindowKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
@@ -200,6 +213,7 @@
         {row}
         {knownNames}
         isHighlighted={row.id === highlightedRowId}
+        {focusField}
         {highlightPulse}
         {showVisibilityToggles}
         isFromHidden={hiddenPeopleSet.has(row.from)}

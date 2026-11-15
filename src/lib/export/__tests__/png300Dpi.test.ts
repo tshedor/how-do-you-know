@@ -171,6 +171,22 @@ describe('buildGraphsZipBytes', () => {
     expect(new TextDecoder().decode(files['graph-2.svg'])).toBe('<svg>two</svg>');
   });
 
+  it('exports generated GraphViz source as .txt files for DOT format', async () => {
+    const graphs = [makeGraph(0, '<svg>one</svg>'), makeGraph(1, '<svg>two</svg>')];
+    const viewAllGraph = makeGraph(99, '<svg>view all</svg>');
+
+    const bytes = await buildGraphsZipBytes(graphs, viewAllGraph, {
+      ...settings,
+      exportFormat: 'DOT'
+    });
+    const files = unzipSync(bytes);
+
+    expect(Object.keys(files).sort()).toEqual(['graph-1.txt', 'graph-2.txt', 'view-all.txt']);
+    expect(new TextDecoder().decode(files['graph-1.txt'])).toBe('digraph { 0 }');
+    expect(new TextDecoder().decode(files['graph-2.txt'])).toBe('digraph { 1 }');
+    expect(new TextDecoder().decode(files['view-all.txt'])).toBe('digraph { 99 }');
+  });
+
   it('omits view-all.svg when no view-all graph is provided', async () => {
     const graphs = [makeGraph(0, '<svg>one</svg>')];
     const bytes = await buildGraphsZipBytes(graphs, null, settings);
