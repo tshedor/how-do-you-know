@@ -58,6 +58,7 @@
     <div
       class="percent-control__popover"
       role="dialog"
+      tabindex="-1"
       aria-label={label}
       onkeydown={handlePopoverKeydown}
     >
