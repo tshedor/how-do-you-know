@@ -1,11 +1,13 @@
 <script lang="ts">
-  import type { RelationshipRow } from '#lib/types';
+  import { tick } from 'svelte';
+  import type { RelationshipField, RelationshipRow } from '#lib/types';
   import NameCombobox from './NameCombobox.svelte';
 
   interface Props {
     row: RelationshipRow;
     knownNames?: string[];
     isHighlighted?: boolean;
+    focusField?: RelationshipField | null;
     highlightPulse?: number;
     showVisibilityToggles?: boolean;
     isFromHidden?: boolean;
@@ -22,6 +24,7 @@
     row,
     knownNames = [],
     isHighlighted = false,
+    focusField = null,
     highlightPulse = 0,
     showVisibilityToggles = false,
     isFromHidden = false,
@@ -39,6 +42,15 @@
   $effect(() => {
     if (isHighlighted && highlightPulse >= 0 && rowEl) {
       rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (focusField) {
+        const selector =
+          focusField === 'relation'
+            ? '.row-item__relation-input'
+            : `.row-item__cell--${focusField} input`;
+        void tick().then(() => {
+          rowEl?.querySelector<HTMLInputElement>(selector)?.focus({ preventScroll: true });
+        });
+      }
     }
   });
 

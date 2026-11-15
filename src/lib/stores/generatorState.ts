@@ -1,6 +1,11 @@
 import { derived, get, writable } from 'svelte/store';
 import { DEFAULT_CONFIG, SAMPLE_ROWS } from '#lib/constants/sampleData';
-import type { GeneratorUiState, GraphConfig, RelationshipRow } from '#lib/types';
+import type {
+  GeneratorUiState,
+  GraphConfig,
+  RelationshipField,
+  RelationshipRow
+} from '#lib/types';
 
 let nextRowId = 1;
 let usesDefaultGraphCount = true;
@@ -12,6 +17,7 @@ const initialUiState = (): GeneratorUiState => ({
   selectedGraphIndex: 0,
   isViewingAll: false,
   highlightedRowId: null,
+  focusField: null,
   highlightPulse: 0,
   isExporting: false
 });
@@ -66,7 +72,9 @@ export function updateGeneratorRow(
 export function removeGeneratorRow(id: string): void {
   generatorRowsStore.update((rows) => rows.filter((row) => row.id !== id));
   generatorUiStore.update((state) =>
-    state.highlightedRowId === id ? { ...state, highlightedRowId: null } : state
+    state.highlightedRowId === id
+      ? { ...state, highlightedRowId: null, focusField: null }
+      : state
   );
 }
 
@@ -110,17 +118,21 @@ export function toggleGeneratorViewAll(): void {
   generatorUiStore.update((state) => ({ ...state, isViewingAll: !state.isViewingAll }));
 }
 
-export function highlightGeneratorRowById(id: string | null): void {
+export function highlightGeneratorRowById(
+  id: string | null,
+  focusField: RelationshipField | null = 'relation'
+): void {
   generatorUiStore.update((state) => ({
     ...state,
     highlightedRowId: id,
+    focusField,
     highlightPulse: state.highlightPulse + 1
   }));
 }
 
 export function highlightGeneratorFirstRowForPerson(name: string): void {
   const row = get(generatorRowsStore).find(({ from, to }) => from === name || to === name);
-  highlightGeneratorRowById(row?.id ?? null);
+  highlightGeneratorRowById(row?.id ?? null, row ? (row.from === name ? 'from' : 'to') : null);
 }
 
 export function setGeneratorExporting(isExporting: boolean): void {

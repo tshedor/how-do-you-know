@@ -1,6 +1,7 @@
 export type PageSize = '8.5x11' | '11x17' | '8.3x11.7';
 export type Orientation = 'landscape' | 'portrait';
-export type ExportFormat = 'PNG' | 'SVG';
+export type ExportFormat = 'PNG' | 'SVG' | 'DOT';
+export type RelationshipField = 'from' | 'to' | 'relation';
 
 export interface RelationshipRow {
   id: string;
@@ -48,12 +49,14 @@ export interface GeneratorUiState {
   selectedGraphIndex: number;
   isViewingAll: boolean;
   highlightedRowId: string | null;
+  focusField: RelationshipField | null;
   highlightPulse: number;
   isExporting: boolean;
 }
 
 export interface StandaloneUiState {
   highlightedRowId: string | null;
+  focusField: RelationshipField | null;
   highlightPulse: number;
   isExporting: boolean;
 }

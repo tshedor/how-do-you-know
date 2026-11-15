@@ -73,6 +73,18 @@ select {
   -webkit-tap-highlight-color: transparent;
 }
 
+input[type='range']::-webkit-slider-runnable-track {
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface-subtle);
+}
+
+input[type='range']::-moz-range-track {
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface-subtle);
+}
+
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,

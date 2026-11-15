@@ -19,7 +19,7 @@ const CONFIG_FOR_ROUND_TRIP: GraphConfig = {
   ...DEFAULT_PAGE_SETTINGS,
   pageSize: '11x17',
   orientation: 'portrait',
-  exportFormat: 'SVG',
+  exportFormat: 'DOT',
   nodeFontSize: 55,
   edgeFontSize: 44,
   graphCount: 20,

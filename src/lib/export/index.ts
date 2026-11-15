@@ -14,22 +14,22 @@ export async function buildGraphsZipBytes(
   viewAllGraph: RenderedGraph | null,
   settings: PageExportSettings
 ): Promise<Uint8Array> {
-  const isPng = settings.exportFormat === 'PNG';
-  const extension = isPng ? 'png' : 'svg';
+  const extension =
+    settings.exportFormat === 'PNG' ? 'png' : settings.exportFormat === 'SVG' ? 'svg' : 'txt';
   const entries: ZipEntry[] = [];
 
   for (let index = 0; index < graphs.length; index++) {
     const graph = graphs[index];
     entries.push({
       name: `graph-${index + 1}.${extension}`,
-      data: await graphToExportBytes(graph, isPng, settings)
+      data: await graphToExportBytes(graph, settings)
     });
   }
 
   if (viewAllGraph) {
     entries.push({
       name: `view-all.${extension}`,
-      data: await graphToExportBytes(viewAllGraph, isPng, settings)
+      data: await graphToExportBytes(viewAllGraph, settings)
     });
   }
 
@@ -60,9 +60,14 @@ export async function openSingleGraphInTab(
   settings: PageExportSettings,
   targetWindow?: Window | null
 ): Promise<void> {
-  const isPng = settings.exportFormat === 'PNG';
-  const bytes = await graphToExportBytes(graph, isPng, settings);
-  const blob = new Blob([bytes as Uint8Array<ArrayBuffer>], { type: isPng ? 'image/png' : 'image/svg+xml' });
+  const bytes = await graphToExportBytes(graph, settings);
+  const mimeType =
+    settings.exportFormat === 'PNG'
+      ? 'image/png'
+      : settings.exportFormat === 'SVG'
+        ? 'image/svg+xml'
+        : 'text/plain;charset=utf-8';
+  const blob = new Blob([bytes as Uint8Array<ArrayBuffer>], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const target = targetWindow ?? window.open('', '_blank');
   if (target) {
@@ -73,11 +78,10 @@ export async function openSingleGraphInTab(
 
 async function graphToExportBytes(
   graph: RenderedGraph,
-  isPng: boolean,
   settings: PageExportSettings
 ): Promise<Uint8Array> {
-  if (isPng) {
+  if (settings.exportFormat === 'PNG') {
     return svgToPng300DpiBytes(graph.svg, settings.pageSize, settings.orientation);
   }
-  return new TextEncoder().encode(graph.svg);
+  return new TextEncoder().encode(settings.exportFormat === 'DOT' ? graph.dot : graph.svg);
 }

@@ -142,6 +142,7 @@
       rows={$generatorRowsStore}
       knownNames={$generatorKnownNamesStore}
       highlightedRowId={$generatorUiStore.highlightedRowId}
+      focusField={$generatorUiStore.focusField}
       highlightPulse={$generatorUiStore.highlightPulse}
       showVisibilityToggles={false}
       onAddRow={() => addGeneratorRow()}

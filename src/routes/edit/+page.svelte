@@ -110,6 +110,7 @@
       rows={$standaloneRowsStore}
       knownNames={$standaloneKnownNamesStore}
       highlightedRowId={$standaloneUiStore.highlightedRowId}
+      focusField={$standaloneUiStore.focusField}
       highlightPulse={$standaloneUiStore.highlightPulse}
       showVisibilityToggles={true}
       hiddenPeople={$standaloneHiddenPeopleStore}

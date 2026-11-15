@@ -2,6 +2,7 @@ import { derived, get, writable } from 'svelte/store';
 import { DEFAULT_PAGE_SETTINGS, SAMPLE_ROWS } from '#lib/constants/sampleData';
 import type {
   PageExportSettings,
+  RelationshipField,
   RelationshipRow,
   StandaloneState,
   StandaloneUiState
@@ -11,6 +12,7 @@ let nextRowId = 1;
 
 const initialUiState = (): StandaloneUiState => ({
   highlightedRowId: null,
+  focusField: null,
   highlightPulse: 0,
   isExporting: false
 });
@@ -60,7 +62,9 @@ export function removeStandaloneRow(id: string): void {
   standaloneRowsStore.update((rows) => rows.filter((row) => row.id !== id));
   standaloneHiddenEdgesStore.update((rowIds) => rowIds.filter((rowId) => rowId !== id));
   standaloneUiStore.update((state) =>
-    state.highlightedRowId === id ? { ...state, highlightedRowId: null } : state
+    state.highlightedRowId === id
+      ? { ...state, highlightedRowId: null, focusField: null }
+      : state
   );
 }
 
@@ -88,17 +92,21 @@ export function hydrateStandaloneState(state: StandaloneState): void {
   standaloneUiStore.set(initialUiState());
 }
 
-export function highlightStandaloneRowById(id: string | null): void {
+export function highlightStandaloneRowById(
+  id: string | null,
+  focusField: RelationshipField | null = 'relation'
+): void {
   standaloneUiStore.update((state) => ({
     ...state,
     highlightedRowId: id,
+    focusField,
     highlightPulse: state.highlightPulse + 1
   }));
 }
 
 export function highlightStandaloneFirstRowForPerson(name: string): void {
   const row = get(standaloneRowsStore).find(({ from, to }) => from === name || to === name);
-  highlightStandaloneRowById(row?.id ?? null);
+  highlightStandaloneRowById(row?.id ?? null, row ? (row.from === name ? 'from' : 'to') : null);
 }
 
 export function setStandaloneExporting(isExporting: boolean): void {

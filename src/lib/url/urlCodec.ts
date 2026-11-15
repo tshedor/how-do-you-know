@@ -23,7 +23,7 @@ const PAYLOAD_VERSION = 1;
 
 const PAGE_SIZES: readonly PageSize[] = ['8.5x11', '11x17', '8.3x11.7'];
 const ORIENTATIONS: readonly Orientation[] = ['landscape', 'portrait'];
-const EXPORT_FORMATS: readonly ExportFormat[] = ['PNG', 'SVG'];
+const EXPORT_FORMATS: readonly ExportFormat[] = ['PNG', 'SVG', 'DOT'];
 
 const GRAPH_COUNT_RANGE = [1, 20] as const;
 const MAX_CONNECTIONS_RANGE = [1, 20] as const;
