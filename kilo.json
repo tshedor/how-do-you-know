@@ -1,0 +1,7 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "permission": {
+    "agent_manager": "deny",
+    "agent_manager_models": "deny"
+  }
+}
