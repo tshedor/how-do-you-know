@@ -12,9 +12,12 @@
   --color-text-muted: #667085;
   --color-border: #dfe4ea;
   --color-border-strong: #cbd2dc;
-  --color-accent: #3157d5;
-  --color-accent-hover: #2648ba;
-  --color-accent-soft: #edf1ff;
+  --color-accent: #16a34a;
+  --color-accent-hover: #15803d;
+  --color-accent-soft: #eafbef;
+  --color-primary: var(--color-accent);
+  --color-primary-hover: var(--color-accent-hover);
+  --color-primary-soft: var(--color-accent-soft);
   --color-danger: #b42318;
   --shadow-dropdown: 0 12px 28px rgb(16 24 40 / 14%), 0 2px 6px rgb(16 24 40 / 6%);
   --radius-control: 7px;
@@ -79,8 +82,8 @@ a:focus-visible {
 }
 
 ::selection {
-  color: #12215c;
-  background: #dce4ff;
+  color: #052e16;
+  background: #bbf7d0;
 }
 
 .app-layout {

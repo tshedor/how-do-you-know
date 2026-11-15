@@ -43,7 +43,8 @@ export class DotSerializer {
     rows: readonly RelationshipRow[],
     settings: PageExportSettings,
     visibleNode: Iterable<string>,
-    visibleEdgeRowIds: Iterable<string>
+    visibleEdgeRowIds: Iterable<string>,
+    preserveHiddenEdgeSpace = false
   ): string {
     const [width, height] = getPageDimensions(settings.pageSize, settings.orientation);
     const visibleNodeSet = new Set(visibleNode);
@@ -78,15 +79,22 @@ export class DotSerializer {
     for (const row of rows) {
       const escapedFrom = escapeDotString(row.from);
       const escapedTo = escapeDotString(row.to);
-      if (!visibleEdgeSet.has(row.id) || row.relation.trim().length === 0) {
+      const isEdgeVisible = visibleEdgeSet.has(row.id);
+      const preserveHiddenSpace = !isEdgeVisible && preserveHiddenEdgeSpace;
+      if (
+        (!isEdgeVisible && !preserveHiddenSpace) ||
+        (isEdgeVisible && row.relation.trim().length === 0)
+      ) {
         lines.push(`  "${escapedFrom}" -- "${escapedTo}" [tooltip=""];`);
         continue;
       }
 
       const escapedRowId = escapeDotString(row.id);
       const labelId = `__label_${escapedRowId}`;
+      const edgeIdAttribute = isEdgeVisible ? `id="edge:${encodeURIComponent(row.id)}", ` : '';
+      const label = isEdgeVisible ? wrapEdgeLabel(row.relation) : ' ';
       lines.push(
-        `  "${labelId}" [id="edge:${encodeURIComponent(row.id)}", label="${wrapEdgeLabel(row.relation)}", tooltip="", fontsize=${settings.edgeFontSize}, shape=plaintext, style=filled, fillcolor=white];`,
+        `  "${labelId}" [${edgeIdAttribute}label="${label}", tooltip="", fontsize=${settings.edgeFontSize}, shape=plaintext, style=filled, fillcolor=white];`,
         `  "${escapedFrom}" -- "${labelId}" [tooltip=""];`,
         `  "${labelId}" -- "${escapedTo}" [tooltip=""];`
       );

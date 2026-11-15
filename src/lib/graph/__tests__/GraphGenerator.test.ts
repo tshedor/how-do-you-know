@@ -281,8 +281,10 @@ describe('standalone and view-all graphs', () => {
     expect(graph.visibleEdgeRowIds).toEqual(['r1', 'r3', 'r4']);
     expect(graph.dot).toContain('"B" [label="", tooltip=""];');
     expect(graph.dot).not.toContain('person:B');
-    expect(graph.dot).toContain('"A" -- "C" [tooltip=""];');
-    expect(graph.dot).not.toContain('__label_r2');
+    expect(graph.dot).not.toContain('"A" -- "C" [tooltip=""];');
+    expect(graph.dot).toContain('"__label_r2" [label=" ", tooltip="", fontsize=38');
+    expect(graph.dot).toContain('"A" -- "__label_r2" [tooltip=""];');
+    expect(graph.dot).not.toContain('id="edge:r2"');
     expect(input).toHaveLength(6);
   });
 

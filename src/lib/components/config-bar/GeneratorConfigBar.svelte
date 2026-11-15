@@ -47,21 +47,21 @@
   </label>
 
   <label class="config-field">
-    <span class="config-field__label">Max Connections/Node</span>
+    <span class="config-field__label">Max Relationships per Person</span>
     <input
       type="number"
       min="1"
       max="20"
       step="1"
       value={config.maxConnectionsPerNode}
-      aria-label="Max connections per node"
+      aria-label="Max relationships per person"
       oninput={handleMaxConnectionsInput}
     />
   </label>
 
   <div class="config-field">
     <PercentSliderPopover
-      label="Hidden Edges"
+      label="Hidden Connection"
       value={config.hiddenEdgeLabelRatio}
       onChange={(val) => onUpdateConfig({ hiddenEdgeLabelRatio: val })}
     />
@@ -69,7 +69,7 @@
 
   <div class="config-field">
     <PercentSliderPopover
-      label="Hidden Nodes"
+      label="Hidden People"
       value={config.hiddenNodeLabelRatio}
       onChange={(val) => onUpdateConfig({ hiddenNodeLabelRatio: val })}
     />
@@ -126,8 +126,8 @@
   }
 
   .config-field input:focus-visible {
-    border-color: var(--color-primary, #2563eb);
-    outline: 2px solid var(--color-primary-soft, #dbeafe);
+    border-color: var(--color-primary, #16a34a);
+    outline: 2px solid var(--color-primary-soft, #eafbef);
     outline-offset: 0;
   }
 

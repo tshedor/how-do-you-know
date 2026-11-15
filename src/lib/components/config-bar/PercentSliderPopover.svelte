@@ -106,12 +106,12 @@
 
   .percent-control__trigger:hover,
   .percent-control__trigger[aria-expanded='true'] {
-    border-color: var(--color-primary, #2563eb);
-    background: var(--color-primary-soft, #f0f6ff);
+    border-color: var(--color-primary, #16a34a);
+    background: var(--color-primary-soft, #eafbef);
   }
 
   .percent-control__trigger:focus-visible {
-    outline: 2px solid var(--color-primary, #2563eb);
+    outline: 2px solid var(--color-primary, #16a34a);
     outline-offset: 2px;
   }
 
@@ -125,8 +125,8 @@
     min-width: 2.75rem;
     padding: 0.25rem 0.5rem;
     border-radius: 999px;
-    background: var(--color-primary-soft, #eff6ff);
-    color: var(--color-primary, #1d4ed8);
+    background: var(--color-primary-soft, #eafbef);
+    color: var(--color-primary, #15803d);
     font-size: 0.75rem;
     font-weight: 750;
     font-variant-numeric: tabular-nums;
@@ -166,18 +166,18 @@
   .percent-control__field input {
     width: 100%;
     margin: 0;
-    accent-color: var(--color-primary, #2563eb);
+    accent-color: var(--color-primary, #16a34a);
     cursor: pointer;
   }
 
   .percent-control__field input:focus-visible {
-    outline: 2px solid var(--color-primary, #2563eb);
+    outline: 2px solid var(--color-primary, #16a34a);
     outline-offset: 3px;
   }
 
   .percent-control__readout {
     min-width: 2.75rem;
-    color: var(--color-primary, #1d4ed8);
+    color: var(--color-primary, #15803d);
     font-size: 0.875rem;
     font-weight: 750;
     font-variant-numeric: tabular-nums;

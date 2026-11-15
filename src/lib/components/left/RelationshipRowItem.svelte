@@ -13,6 +13,7 @@
     isEdgeHidden?: boolean;
     onUpdate?: (patch: Partial<Omit<RelationshipRow, 'id'>>) => void;
     onRemove?: () => void;
+    onAdvanceFocus?: () => void;
     onTogglePersonHidden?: (name: string) => void;
     onToggleEdgeHidden?: () => void;
   }
@@ -28,6 +29,7 @@
     isEdgeHidden = false,
     onUpdate = () => {},
     onRemove = () => {},
+    onAdvanceFocus = () => {},
     onTogglePersonHidden,
     onToggleEdgeHidden
   }: Props = $props();
@@ -39,6 +41,12 @@
       rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   });
+
+  function handleRelationKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Tab' || event.shiftKey) return;
+    event.preventDefault();
+    onAdvanceFocus();
+  }
 </script>
 
 <li bind:this={rowEl} class="row-item" class:is-highlighted={isHighlighted} data-row-id={row.id}>
@@ -47,6 +55,7 @@
       {#if showVisibilityToggles}
         <button
           type="button"
+          tabindex="-1"
           class="visibility-toggle"
           class:is-hidden={isFromHidden}
           aria-pressed={isFromHidden}
@@ -100,6 +109,7 @@
       {#if showVisibilityToggles}
         <button
           type="button"
+          tabindex="-1"
           class="visibility-toggle"
           class:is-hidden={isToHidden}
           aria-pressed={isToHidden}
@@ -153,6 +163,7 @@
       {#if showVisibilityToggles}
         <button
           type="button"
+          tabindex="-1"
           class="visibility-toggle"
           class:is-hidden={isEdgeHidden}
           aria-pressed={isEdgeHidden}
@@ -202,6 +213,7 @@
         aria-label="Relationship between {row.from || 'person A'} and {row.to || 'person B'}"
         placeholder="Relationship"
         value={row.relation}
+        onkeydown={handleRelationKeydown}
         oninput={(event) => {
           const target = event.currentTarget;
           if (target instanceof HTMLInputElement) {
@@ -214,6 +226,7 @@
     <div class="row-item__cell row-item__cell--actions">
       <button
         type="button"
+        tabindex="-1"
         class="row-item__delete"
         aria-label="Delete connection"
         onclick={() => onRemove()}
@@ -241,26 +254,26 @@
   .row-item {
     position: relative;
     z-index: 0;
-    margin: 0 0 7px;
-    border: 1px solid var(--color-border);
-    border-radius: 9px;
-    background: var(--color-surface);
-    box-shadow: 0 1px 2px rgb(16 24 40 / 3%);
+    margin: 0;
+    background: #f8fafc;
     transition:
-      border-color var(--transition-fast),
       box-shadow var(--transition-fast),
       background-color var(--transition-fast);
   }
 
+  .row-item:nth-child(even) {
+    background: #f1f5f9;
+  }
+
   .row-item:focus-within {
     z-index: 40;
-    border-color: #b9c4d3;
+    background: #e9eef2;
   }
 
   .row-item.is-highlighted {
     z-index: 2;
-    border-color: var(--color-accent);
-    background: #fbfcff;
+    background: var(--color-accent-soft);
+    box-shadow: inset 3px 0 0 var(--color-accent);
     animation: row-highlight 1.35s ease-out;
   }
 
@@ -310,7 +323,7 @@
 
   .row-item__relation-input:focus {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgb(49 87 213 / 11%);
+    box-shadow: 0 0 0 3px rgb(22 163 74 / 11%);
   }
 
   .visibility-toggle,
@@ -368,15 +381,12 @@
 
   @keyframes row-highlight {
     0% {
-      box-shadow: 0 0 0 0 rgb(49 87 213 / 38%);
-      background: var(--color-accent-soft);
-    }
-    45% {
-      box-shadow: 0 0 0 5px rgb(49 87 213 / 13%);
+      box-shadow: inset 5px 0 0 var(--color-accent);
+      background: #bbf7d0;
     }
     100% {
-      box-shadow: 0 0 0 2px rgb(49 87 213 / 9%);
-      background: #fbfcff;
+      box-shadow: inset 3px 0 0 var(--color-accent);
+      background: var(--color-accent-soft);
     }
   }
 
@@ -390,7 +400,7 @@
 
     .row-item.is-highlighted {
       animation: none;
-      box-shadow: 0 0 0 3px rgb(49 87 213 / 14%);
+      box-shadow: inset 3px 0 0 var(--color-accent);
     }
   }
 </style>
