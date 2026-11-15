@@ -236,3 +236,161 @@
     </div>
   </div>
 </li>
+
+<style>
+  .row-item {
+    position: relative;
+    z-index: 0;
+    margin: 0 0 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+    background: var(--color-surface);
+    box-shadow: 0 1px 2px rgb(16 24 40 / 3%);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .row-item:focus-within {
+    z-index: 40;
+    border-color: #b9c4d3;
+  }
+
+  .row-item.is-highlighted {
+    z-index: 2;
+    border-color: var(--color-accent);
+    background: #fbfcff;
+    animation: row-highlight 1.35s ease-out;
+  }
+
+  .row-item__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.12fr) 30px;
+    gap: 8px;
+    align-items: center;
+    padding: 7px 8px;
+  }
+
+  .row-item__cell {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .row-item__cell--actions {
+    justify-content: center;
+  }
+
+  .row-item__relation-input {
+    width: 100%;
+    min-width: 0;
+    height: 36px;
+    padding: 7px 9px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-control);
+    outline: none;
+    color: var(--color-text);
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    background: var(--color-surface);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .row-item__relation-input::placeholder {
+    color: #98a2b3;
+  }
+
+  .row-item__relation-input:hover {
+    border-color: #aab4c3;
+  }
+
+  .row-item__relation-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgb(49 87 213 / 11%);
+  }
+
+  .visibility-toggle,
+  .row-item__delete {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    transition:
+      color var(--transition-fast),
+      opacity var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .visibility-toggle {
+    width: 22px;
+    height: 30px;
+    color: #667085;
+  }
+
+  .visibility-toggle:hover {
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+
+  .visibility-toggle.is-hidden {
+    color: #98a2b3;
+    opacity: 0.48;
+  }
+
+  .visibility-toggle.is-hidden:hover {
+    color: var(--color-accent);
+    opacity: 1;
+  }
+
+  .visibility-toggle :global(svg),
+  .row-item__delete :global(svg) {
+    display: block;
+  }
+
+  .row-item__delete {
+    width: 28px;
+    height: 32px;
+    color: #98a2b3;
+  }
+
+  .row-item__delete:hover {
+    color: var(--color-danger);
+    background: #fff1f0;
+  }
+
+  @keyframes row-highlight {
+    0% {
+      box-shadow: 0 0 0 0 rgb(49 87 213 / 38%);
+      background: var(--color-accent-soft);
+    }
+    45% {
+      box-shadow: 0 0 0 5px rgb(49 87 213 / 13%);
+    }
+    100% {
+      box-shadow: 0 0 0 2px rgb(49 87 213 / 9%);
+      background: #fbfcff;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .row-item,
+    .visibility-toggle,
+    .row-item__delete,
+    .row-item__relation-input {
+      transition: none;
+    }
+
+    .row-item.is-highlighted {
+      animation: none;
+      box-shadow: 0 0 0 3px rgb(49 87 213 / 14%);
+    }
+  }
+</style>
