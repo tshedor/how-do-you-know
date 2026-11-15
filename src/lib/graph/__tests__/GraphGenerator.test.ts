@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import {
-  ConnectionGraph,
-  DotSerializer,
-  PartyMapGenerator,
-  SeededRandom
-} from '#lib/graph';
+import { ConnectionGraph } from '#lib/graph/ConnectionGraph';
+import { DotSerializer } from '#lib/graph/DotSerializer';
+import { GraphGenerator } from '#lib/graph/GraphGenerator';
+import { SeededRandom } from '#lib/graph/SeededRandom';
 import type {
   GraphConfig,
   Orientation,
@@ -95,8 +93,8 @@ describe('ConnectionGraph', () => {
   });
 });
 
-describe('PartyMapGenerator.generate', () => {
-  const generator = new PartyMapGenerator();
+describe('GraphGenerator.generate', () => {
+  const generator = new GraphGenerator();
   const rows = [
     row('r1', 'Alice', 'Bob', 'Sunday night drum circle'),
     row('r2', 'Bob', 'Carol', 'Work nemesis'),
@@ -147,7 +145,7 @@ describe('PartyMapGenerator.generate', () => {
       config({ hiddenNodeLabelRatio: 1 })
     );
 
-    expect(graph.visiblePeople).toEqual([]);
+    expect(graph.visibleNode).toEqual([]);
     expect(graph.dot).toContain('"Alice" [label="", tooltip=""];');
     expect(graph.dot).toContain('"Bob" [label="", tooltip=""];');
     expect(graph.dot).not.toContain('person:');
@@ -171,14 +169,14 @@ describe('PartyMapGenerator.generate', () => {
     expect(blankGraph.dot).not.toContain('__label_blank');
   });
 
-  it('uses visible edge label-as-node structure and wraps labels to three-word lines', () => {
+  it('uses visible edge label-as-node structure and wraps after 12 characters', () => {
     const [graph] = generator.generate(
-      [row('r1', 'Alice', 'Bob', 'one two three four five six seven')],
+      [row('r1', 'Alice', 'Bob', 'alpha beta gamma delta epsilon zeta eta theta')],
       config()
     );
 
     expect(graph.dot).toContain(
-      '"__label_r1" [id="edge:r1", label="one two three\\nfour five six\\nseven", tooltip="", fontsize=38, shape=plaintext, style=filled, fillcolor=white];'
+      '"__label_r1" [id="edge:r1", label="alpha beta gamma\\ndelta epsilon\\nzeta eta theta", tooltip="", fontsize=38, shape=plaintext, style=filled, fillcolor=white];'
     );
     expect(graph.dot).toContain('"Alice" -- "__label_r1" [tooltip=""];');
     expect(graph.dot).toContain('"__label_r1" -- "Bob" [tooltip=""];');
@@ -211,7 +209,7 @@ describe('PartyMapGenerator.generate', () => {
 });
 
 describe('DOT page layout and escaping', () => {
-  const generator = new PartyMapGenerator();
+  const generator = new GraphGenerator();
   const cases: Array<[PageSize, Orientation, string]> = [
     ['8.5x11', 'portrait', 'size="8.5,11!";'],
     ['8.5x11', 'landscape', 'size="11,8.5!";'],
@@ -245,10 +243,10 @@ describe('DOT page layout and escaping', () => {
     expect(dot).toContain('"Alice \\"Al\\"" [id="person:Alice%20%22Al%22"');
     expect(dot).toContain('"Bob\\\\North" [id="person:Bob%5CNorth"');
     expect(dot).toContain('"__label_row\\"1" [id="edge:row%221"');
-    expect(dot).toContain('label="said \\"hello\\" loudly"');
+    expect(dot).toContain('label="said \\"hello\\"\\nloudly"');
   });
 
-  it('falls back to the escaped trimmed relation when word wrapping finds no match', () => {
+  it('trims and escapes relations without wrapping spaces', () => {
     const dot = new DotSerializer().serialize(
       [row('r1', 'A', 'B', '  "!!!"  ')],
       baseSettings,
@@ -260,7 +258,7 @@ describe('DOT page layout and escaping', () => {
 });
 
 describe('standalone and view-all graphs', () => {
-  const generator = new PartyMapGenerator();
+  const generator = new GraphGenerator();
 
   it('builds every valid standalone row without a degree cap and applies hidden sets', () => {
     const validRows = [
@@ -279,7 +277,7 @@ describe('standalone and view-all graphs', () => {
     expect(graph.index).toBe(0);
     expect(graph.rows).toEqual(validRows);
     expect(graph.rows).not.toBe(validRows);
-    expect(graph.visiblePeople).toEqual(['A', 'C', 'D']);
+    expect(graph.visibleNode).toEqual(['A', 'C', 'D']);
     expect(graph.visibleEdgeRowIds).toEqual(['r1', 'r3', 'r4']);
     expect(graph.dot).toContain('"B" [label="", tooltip=""];');
     expect(graph.dot).not.toContain('person:B');
@@ -295,7 +293,7 @@ describe('standalone and view-all graphs', () => {
 
     expect(viewAll.index).toBe(-1);
     expect({ ...viewAll, index: 0 }).toEqual(standalone);
-    expect(viewAll.visiblePeople).toEqual(['Alice', 'Bob', 'Carol']);
+    expect(viewAll.visibleNode).toEqual(['Alice', 'Bob', 'Carol']);
     expect(viewAll.visibleEdgeRowIds).toEqual(['r1', 'r2']);
     expect(viewAll.dot).toContain('person:Alice');
     expect(viewAll.dot).toContain('__label_r1');

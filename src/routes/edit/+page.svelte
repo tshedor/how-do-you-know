@@ -5,7 +5,7 @@
   import LeftPane from '#lib/components/left/LeftPane.svelte';
   import GraphCanvas from '#lib/components/viewer/GraphCanvas.svelte';
   import { openSingleGraphInTab } from '#lib/export';
-  import { PartyMapGenerator } from '#lib/graph';
+  import { GraphGenerator } from '#lib/graph/GraphGenerator';
   import {
     addStandaloneRow,
     highlightStandaloneFirstRowForPerson,
@@ -24,10 +24,10 @@
     updateStandaloneSettings
   } from '#lib/stores/standaloneState';
   import type { RenderedGraph } from '#lib/types';
-  import { initStandaloneUrlSync } from '#lib/url';
+  import { initStandaloneUrlSync } from '#lib/url/urlSync';
   import { renderGraphToSvg } from '#lib/viz';
 
-  const generator = new PartyMapGenerator();
+  const generator = new GraphGenerator();
 
   let renderedGraph = $state<RenderedGraph | null>(null);
   let isRendering = $state(false);

@@ -209,7 +209,7 @@ export function buildStandaloneEditUrl(
   settings: PageExportSettings,
   basePath = ''
 ): string {
-  const visiblePeople = new Set(graph.visiblePeople);
+  const visibleNode = new Set(graph.visibleNode);
   const people = new Set<string>();
   graph.rows.forEach((row) => {
     if (row.from.trim()) {
@@ -222,7 +222,7 @@ export function buildStandaloneEditUrl(
   const visibleEdgeRowIds = new Set(graph.visibleEdgeRowIds);
   const encoded = encodeStandaloneState({
     rows: graph.rows,
-    hiddenPeople: [...people].filter((name) => !visiblePeople.has(name)),
+    hiddenPeople: [...people].filter((name) => !visibleNode.has(name)),
     hiddenEdgeRowIds: graph.rows
       .filter((row) => !visibleEdgeRowIds.has(row.id))
       .map((row) => row.id),

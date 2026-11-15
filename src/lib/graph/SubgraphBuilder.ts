@@ -4,7 +4,7 @@ import type { GraphConfig, RelationshipRow } from '#lib/types';
 
 export interface SubgraphResult {
   rows: RelationshipRow[];
-  visiblePeople: string[];
+  visibleNode: string[];
   visibleEdgeRowIds: string[];
 }
 
@@ -50,14 +50,14 @@ export class SubgraphBuilder {
     const people = [
       ...new Set(selected.flatMap((row) => [row.from, row.to]))
     ];
-    const visiblePeople = people.filter(() => !rng.odds(config.hiddenNodeLabelRatio));
+    const visibleNode = people.filter(() => !rng.odds(config.hiddenNodeLabelRatio));
     const visibleEdgeRowIds = selected
       .filter(() => !rng.odds(config.hiddenEdgeLabelRatio))
       .map((row) => row.id);
 
     return {
       rows: selected.map((row) => ({ ...row })),
-      visiblePeople,
+      visibleNode,
       visibleEdgeRowIds
     };
   }

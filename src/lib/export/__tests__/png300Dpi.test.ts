@@ -152,7 +152,7 @@ describe('buildGraphsZipBytes', () => {
       index,
       dot: `digraph { ${index} }`,
       rows: [],
-      visiblePeople: [],
+      visibleNode: [],
       visibleEdgeRowIds: [],
       svg
     };

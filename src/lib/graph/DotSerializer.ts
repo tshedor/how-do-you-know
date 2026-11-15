@@ -24,9 +24,17 @@ export function escapeDotString(value: string): string {
 }
 
 export function wrapEdgeLabel(relation: string): string {
-  const trimmed = relation.trim();
-  const lines = trimmed.match(/\b[\w']+(?:[^\w\n]+[\w']+){0,2}\b/g);
-  if (!lines) return escapeDotString(trimmed);
+  const lines: string[] = [];
+  let remaining = relation.trim();
+
+  while (remaining.length > 12) {
+    const wrapIndex = remaining.indexOf(' ', 12);
+    if (wrapIndex === -1) break;
+    lines.push(remaining.slice(0, wrapIndex));
+    remaining = remaining.slice(wrapIndex + 1).trimStart();
+  }
+
+  lines.push(remaining);
   return lines.map(escapeDotString).join('\\n');
 }
 
@@ -34,11 +42,11 @@ export class DotSerializer {
   serialize(
     rows: readonly RelationshipRow[],
     settings: PageExportSettings,
-    visiblePeople: Iterable<string>,
+    visibleNode: Iterable<string>,
     visibleEdgeRowIds: Iterable<string>
   ): string {
     const [width, height] = getPageDimensions(settings.pageSize, settings.orientation);
-    const visiblePeopleSet = new Set(visiblePeople);
+    const visibleNodeSet = new Set(visibleNode);
     const visibleEdgeSet = new Set(visibleEdgeRowIds);
     const people = [...new Set(rows.flatMap((row) => [row.from, row.to]))];
     const lines = [
@@ -58,7 +66,7 @@ export class DotSerializer {
 
     for (const person of people) {
       const escapedPerson = escapeDotString(person);
-      if (visiblePeopleSet.has(person)) {
+      if (visibleNodeSet.has(person)) {
         lines.push(
           `  "${escapedPerson}" [id="person:${encodeURIComponent(person)}", label="${escapedPerson}", tooltip=""];`
         );

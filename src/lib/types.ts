@@ -36,7 +36,7 @@ export interface GeneratedGraph {
   index: number;
   dot: string;
   rows: RelationshipRow[];
-  visiblePeople: string[];
+  visibleNode: string[];
   visibleEdgeRowIds: string[];
 }
 
