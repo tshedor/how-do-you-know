@@ -3,23 +3,23 @@
   import ExportSplitButton from './ExportSplitButton.svelte';
 
   let {
-    exportFormat,
+    exportFormat = 'PNG',
     isExporting = false,
     showGeneratorActions = false,
     canExportStandalone = false,
     onReshuffle,
     onExportStandalone,
-    onViewFormat,
-    onSelectFormat
+    onViewFormat = () => undefined,
+    onSelectFormat = () => undefined
   }: {
-    exportFormat: ExportFormat;
+    exportFormat?: ExportFormat;
     isExporting?: boolean;
     showGeneratorActions?: boolean;
     canExportStandalone?: boolean;
     onReshuffle?: () => void;
     onExportStandalone?: () => void;
-    onViewFormat: () => void;
-    onSelectFormat: (fmt: ExportFormat) => void;
+    onViewFormat?: () => void;
+    onSelectFormat?: (fmt: ExportFormat) => void;
   } = $props();
 </script>
 
