@@ -10,6 +10,7 @@
     addStandaloneRow,
     highlightStandaloneFirstRowForPerson,
     highlightStandaloneRowById,
+    importStandaloneRows,
     removeStandaloneRow,
     setStandaloneExporting,
     standaloneHiddenEdgesStore,
@@ -32,6 +33,7 @@
   let renderedGraph = $state<RenderedGraph | null>(null);
   let isRendering = $state(false);
   let errorMessage = $state<string | null>(null);
+  let connectionsPaneWidth = $state<number | null>(null);
   let renderSequence = 0;
 
   onMount(() => initStandaloneUrlSync());
@@ -98,7 +100,12 @@
 </svelte:head>
 
 <main class="app-layout">
-  <div class="app-layout__left">
+  <div
+    class="app-layout__left"
+    style:--connections-pane-width={connectionsPaneWidth === null
+      ? undefined
+      : `${connectionsPaneWidth}px`}
+  >
     <LeftPane
       rows={$standaloneRowsStore}
       knownNames={$standaloneKnownNamesStore}
@@ -108,6 +115,8 @@
       hiddenPeople={$standaloneHiddenPeopleStore}
       hiddenEdgeRowIds={$standaloneHiddenEdgesStore}
       onAddRow={() => addStandaloneRow()}
+      onImportRows={importStandaloneRows}
+      onResize={(width) => (connectionsPaneWidth = width)}
       onUpdateRow={updateStandaloneRow}
       onRemoveRow={removeStandaloneRow}
       onTogglePersonHidden={toggleStandalonePersonHidden}

@@ -43,6 +43,10 @@ export function addStandaloneRow(row: Partial<RelationshipRow> = {}): string {
   return newRow.id;
 }
 
+export function importStandaloneRows(rows: Array<Omit<RelationshipRow, 'id'>>): void {
+  standaloneRowsStore.update((currentRows) => [...currentRows, ...rows.map(createRow)]);
+}
+
 export function updateStandaloneRow(
   id: string,
   patch: Partial<Omit<RelationshipRow, 'id'>>

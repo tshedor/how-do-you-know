@@ -8,16 +8,19 @@ import {
   generatorRowsStore,
   generatorUiStore,
   highlightGeneratorFirstRowForPerson,
+  importGeneratorRows,
   removeGeneratorRow,
   selectGeneratorGraph,
   setGeneratorConfig,
   setGeneratorRows,
   toggleGeneratorViewAll,
+  updateGeneratorConfig,
   updateGeneratorRow
 } from '#lib/stores/generatorState';
 import {
   hydrateStandaloneState,
   highlightStandaloneRowById,
+  importStandaloneRows,
   standaloneHiddenEdgesStore,
   standaloneHiddenPeopleStore,
   standaloneKnownNamesStore,
@@ -70,6 +73,33 @@ describe('generator state', () => {
     highlightGeneratorFirstRowForPerson('Alice');
     expect(get(generatorUiStore)).toMatchObject({ highlightedRowId: 'sample-1', highlightPulse: 1 });
   });
+
+  it('defaults graph count to rows divided by 20 until manually overridden', () => {
+    setGeneratorRows([]);
+    expect(get(generatorConfigStore).graphCount).toBe(1);
+
+    const rows = Array.from({ length: 21 }, (_, index) => ({
+      id: `row-${index}`,
+      from: `Person ${index}`,
+      to: `Person ${index + 1}`,
+      relation: 'Connection'
+    }));
+    setGeneratorRows(rows);
+    expect(get(generatorConfigStore).graphCount).toBe(2);
+
+    updateGeneratorConfig({ graphCount: 4 });
+    setGeneratorRows([
+      ...rows,
+      ...rows.map((row, index) => ({ ...row, id: `extra-${index}` }))
+    ]);
+    expect(get(generatorConfigStore).graphCount).toBe(4);
+  });
+
+  it('appends imported generator connections', () => {
+    importGeneratorRows([{ from: 'Alice', to: 'Bob', relation: 'Imported' }]);
+    expect(get(generatorRowsStore)).toHaveLength(SAMPLE_ROWS.length + 1);
+    expect(get(generatorRowsStore).at(-1)).toMatchObject({ relation: 'Imported' });
+  });
 });
 
 describe('standalone state', () => {
@@ -99,6 +129,12 @@ describe('standalone state', () => {
       'Peter',
       'Stan'
     ]);
+  });
+
+  it('appends imported standalone connections', () => {
+    importStandaloneRows([{ from: 'Alice', to: 'Bob', relation: 'Imported' }]);
+    expect(get(standaloneRowsStore)).toHaveLength(SAMPLE_ROWS.length + 1);
+    expect(get(standaloneRowsStore).at(-1)).toMatchObject({ relation: 'Imported' });
   });
 
   it('toggles hidden people and edges and pulses highlights', () => {

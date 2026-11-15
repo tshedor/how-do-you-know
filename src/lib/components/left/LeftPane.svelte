@@ -1,7 +1,11 @@
 <script lang="ts">
   import { tick } from 'svelte';
+  import { parseRelationshipsCsv, type RelationshipCsvRow } from '#lib/csv';
   import type { RelationshipRow } from '#lib/types';
   import RelationshipRowItem from './RelationshipRowItem.svelte';
+
+  const MIN_PANE_WIDTH = 340;
+  const MIN_GRAPH_WIDTH = 320;
 
   interface Props {
     rows?: RelationshipRow[];
@@ -12,6 +16,8 @@
     hiddenPeople?: readonly string[];
     hiddenEdgeRowIds?: readonly string[];
     onAddRow?: () => void;
+    onImportRows?: (rows: RelationshipCsvRow[]) => void;
+    onResize?: (width: number) => void;
     onUpdateRow?: (id: string, patch: Partial<Omit<RelationshipRow, 'id'>>) => void;
     onRemoveRow?: (id: string) => void;
     onTogglePersonHidden?: (name: string) => void;
@@ -27,6 +33,8 @@
     hiddenPeople = [],
     hiddenEdgeRowIds = [],
     onAddRow = () => {},
+    onImportRows,
+    onResize = () => {},
     onUpdateRow = () => {},
     onRemoveRow = () => {},
     onTogglePersonHidden,
@@ -36,11 +44,78 @@
   let hiddenPeopleSet = $derived(new Set(hiddenPeople));
   let hiddenEdgeRowIdSet = $derived(new Set(hiddenEdgeRowIds));
   let rowsEl = $state<HTMLUListElement | null>(null);
+  let paneEl = $state<HTMLElement | null>(null);
+  let fileInputEl = $state<HTMLInputElement | null>(null);
   let isDrawerOpen = $state(false);
+  let importError = $state<string | null>(null);
+  let resizePointerId: number | null = null;
+  let resizeStartX = 0;
+  let resizeStartWidth = 0;
 
   function handleWindowKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       isDrawerOpen = false;
+    }
+  }
+
+  function clampPaneWidth(width: number): number {
+    const maximum = Math.max(MIN_PANE_WIDTH, window.innerWidth - MIN_GRAPH_WIDTH);
+    return Math.min(maximum, Math.max(MIN_PANE_WIDTH, width));
+  }
+
+  function handleResizeStart(event: PointerEvent): void {
+    const handle = event.currentTarget;
+    if (event.button !== 0 || !(handle instanceof HTMLButtonElement) || !paneEl) return;
+    event.preventDefault();
+    resizePointerId = event.pointerId;
+    resizeStartX = event.clientX;
+    resizeStartWidth = paneEl.getBoundingClientRect().width;
+    handle.setPointerCapture(event.pointerId);
+  }
+
+  function handleResizeMove(event: PointerEvent): void {
+    if (event.pointerId !== resizePointerId) return;
+    onResize(clampPaneWidth(resizeStartWidth + event.clientX - resizeStartX));
+  }
+
+  function handleResizeEnd(event: PointerEvent): void {
+    const handle = event.currentTarget;
+    if (event.pointerId !== resizePointerId || !(handle instanceof HTMLButtonElement)) return;
+    if (handle.hasPointerCapture(event.pointerId)) {
+      handle.releasePointerCapture(event.pointerId);
+    }
+    resizePointerId = null;
+  }
+
+  function handleResizeKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    const distance = event.shiftKey ? 48 : 16;
+    onResize(
+      clampPaneWidth(
+        (paneEl?.getBoundingClientRect().width ?? MIN_PANE_WIDTH) + direction * distance
+      )
+    );
+  }
+
+  async function handleCsvImport(event: Event): Promise<void> {
+    const input = event.currentTarget;
+    if (!(input instanceof HTMLInputElement) || !onImportRows) return;
+    const file = input.files?.[0];
+    if (!file) return;
+    const importRows = onImportRows;
+    importError = null;
+    try {
+      const importedRows = parseRelationshipsCsv(await file.text());
+      if (importedRows.length === 0) {
+        throw new Error('The CSV must contain at least one connection.');
+      }
+      importRows(importedRows);
+    } catch (error) {
+      importError = error instanceof Error ? error.message : 'Unable to import the CSV.';
+    } finally {
+      input.value = '';
     }
   }
 
@@ -91,6 +166,7 @@
 {/if}
 
 <aside
+  bind:this={paneEl}
   id="connections-drawer"
   class="left-pane"
   class:is-open={isDrawerOpen}
@@ -142,11 +218,42 @@
 
   <footer class="left-pane__footer">
     <button type="button" class="add-row-btn" onclick={() => onAddRow()}>+ Add Connection</button>
+    {#if onImportRows}
+      <input
+        bind:this={fileInputEl}
+        class="left-pane__file-input"
+        type="file"
+        accept=".csv,text/csv"
+        aria-label="CSV file"
+        onchange={handleCsvImport}
+      />
+      <button type="button" class="import-csv-btn" onclick={() => fileInputEl?.click()}>
+        <span>Import CSV</span>
+        <span class="csv-help" aria-hidden="true">
+          ?
+          <span class="csv-help__tooltip">From,To,Connection</span>
+        </span>
+      </button>
+    {/if}
+    {#if importError}
+      <p class="import-error" role="alert">{importError}</p>
+    {/if}
   </footer>
+  <button
+    type="button"
+    class="left-pane__resize-handle"
+    aria-label="Resize connections pane with arrow keys or by dragging"
+    onpointerdown={handleResizeStart}
+    onpointermove={handleResizeMove}
+    onpointerup={handleResizeEnd}
+    onpointercancel={handleResizeEnd}
+    onkeydown={handleResizeKeydown}
+  ></button>
 </aside>
 
 <style>
   .left-pane {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -208,12 +315,51 @@
     z-index: 30;
     display: flex;
     flex: none;
+    flex-wrap: wrap;
     gap: 8px;
     padding: 12px;
     border-top: 1px solid var(--color-border);
     background: rgb(255 255 255 / 96%);
     box-shadow: 0 -8px 20px rgb(16 24 40 / 4%);
     backdrop-filter: blur(8px);
+  }
+
+  .left-pane__file-input {
+    display: none;
+  }
+
+  .left-pane__resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    width: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: col-resize;
+    touch-action: none;
+  }
+
+  .left-pane__resize-handle::after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 4px;
+    width: 2px;
+    background: transparent;
+    content: '';
+    transition: background-color var(--transition-fast);
+  }
+
+  .left-pane__resize-handle:hover::after,
+  .left-pane__resize-handle:focus-visible::after {
+    background: var(--color-accent);
+  }
+
+  .left-pane__resize-handle:focus-visible {
+    outline: none;
   }
 
   .add-row-btn {
@@ -244,7 +390,82 @@
     background: var(--color-accent-hover);
   }
 
+  .import-csv-btn {
+    display: inline-flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 8px 11px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-control);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    white-space: nowrap;
+  }
+
+  .import-csv-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent-hover);
+    background: var(--color-accent-soft);
+  }
+
+  .csv-help {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 0.6875rem;
+    line-height: 1;
+  }
+
+  .csv-help__tooltip {
+    position: absolute;
+    right: -8px;
+    bottom: calc(100% + 10px);
+    z-index: 50;
+    width: max-content;
+    padding: 6px 8px;
+    border-radius: 5px;
+    background: var(--color-text);
+    color: var(--color-surface);
+    box-shadow: var(--shadow-dropdown);
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(3px);
+    transition:
+      opacity var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .csv-help:hover .csv-help__tooltip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .import-error {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--color-danger);
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
   @media (max-width: 48rem) {
+    .left-pane__resize-handle {
+      display: none;
+    }
+
     .left-pane {
       position: fixed;
       inset: 0 auto 0 0;

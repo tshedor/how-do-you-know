@@ -255,14 +255,14 @@
     position: relative;
     z-index: 0;
     margin: 0;
-    background: #f8fafc;
+    background: inherit;
     transition:
       box-shadow var(--transition-fast),
       background-color var(--transition-fast);
   }
 
   .row-item:nth-child(even) {
-    background: #f1f5f9;
+    background: #f8fafc;
   }
 
   .row-item:focus-within {

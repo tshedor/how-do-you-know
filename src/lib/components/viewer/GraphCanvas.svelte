@@ -63,7 +63,7 @@
   function handleWheel(event: WheelEvent): void {
     if (!graph) return;
     event.preventDefault();
-    const factor = event.deltaY > 0 ? 1.12 : 1 / 1.12;
+    const factor = event.deltaY > 0 ? 1.05 : 1 / 1.05;
     zoom = Math.min(8, Math.max(0.25, zoom * factor));
   }
 
