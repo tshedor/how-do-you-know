@@ -20,6 +20,8 @@
   let panY = $state(0);
   let isPanning = $state(false);
   let activePointerId: number | null = null;
+  let startPointerX = 0;
+  let startPointerY = 0;
   let lastPointerX = 0;
   let lastPointerY = 0;
   let didPan = false;
@@ -88,24 +90,33 @@
       return;
     }
     activePointerId = event.pointerId;
+    startPointerX = event.clientX;
+    startPointerY = event.clientY;
     lastPointerX = event.clientX;
     lastPointerY = event.clientY;
     didPan = false;
-    isPanning = true;
-    viewport.setPointerCapture(event.pointerId);
+    isPanning = false;
   }
 
   function handlePointerMove(event: PointerEvent): void {
     if (activePointerId !== event.pointerId) return;
+    if (!didPan) {
+      const distance = Math.hypot(event.clientX - startPointerX, event.clientY - startPointerY);
+      if (distance < 4) return;
+      didPan = true;
+      isPanning = true;
+      const viewport = event.currentTarget;
+      if (viewport instanceof HTMLDivElement) {
+        viewport.setPointerCapture(event.pointerId);
+      }
+    }
+
     const deltaX = event.clientX - lastPointerX;
     const deltaY = event.clientY - lastPointerY;
-    if (deltaX !== 0 || deltaY !== 0) {
-      didPan = true;
-      panX += deltaX;
-      panY += deltaY;
-      lastPointerX = event.clientX;
-      lastPointerY = event.clientY;
-    }
+    panX += deltaX;
+    panY += deltaY;
+    lastPointerX = event.clientX;
+    lastPointerY = event.clientY;
   }
 
   function handlePointerUp(event: PointerEvent): void {
