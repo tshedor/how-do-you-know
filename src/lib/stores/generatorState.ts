@@ -3,6 +3,10 @@ import { DEFAULT_CONFIG, SAMPLE_ROWS } from '#lib/constants/sampleData';
 import type { GeneratorUiState, GraphConfig, RelationshipRow } from '#lib/types';
 
 let nextRowId = 1;
+let usesDefaultGraphCount = true;
+
+export const getDefaultGraphCount = (rowCount: number): number =>
+  Math.min(20, Math.max(1, Math.ceil(rowCount / 20)));
 
 const initialUiState = (): GeneratorUiState => ({
   selectedGraphIndex: 0,
@@ -29,6 +33,14 @@ export const generatorKnownNamesStore = derived(generatorRowsStore, ($rows) =>
   )
 );
 export const generatorUiStore = writable<GeneratorUiState>(initialUiState());
+
+generatorRowsStore.subscribe((rows) => {
+  if (!usesDefaultGraphCount) return;
+  const graphCount = getDefaultGraphCount(rows.length);
+  generatorConfigStore.update((config) =>
+    config.graphCount === graphCount ? config : { ...config, graphCount }
+  );
+});
 
 generatorConfigStore.subscribe(({ graphCount }) => {
   generatorUiStore.update((state) =>
@@ -62,11 +74,20 @@ export function setGeneratorRows(rows: RelationshipRow[]): void {
   generatorRowsStore.set(copyRows(rows));
 }
 
+export function importGeneratorRows(rows: Array<Omit<RelationshipRow, 'id'>>): void {
+  generatorRowsStore.update((currentRows) => [...currentRows, ...rows.map(createRow)]);
+}
+
 export function updateGeneratorConfig(patch: Partial<GraphConfig>): void {
+  if (patch.graphCount !== undefined) {
+    usesDefaultGraphCount = false;
+  }
   generatorConfigStore.update((config) => ({ ...config, ...patch }));
 }
 
 export function setGeneratorConfig(config: GraphConfig): void {
+  usesDefaultGraphCount =
+    config.graphCount === getDefaultGraphCount(get(generatorRowsStore).length);
   generatorConfigStore.set({ ...config });
 }
 

@@ -97,9 +97,10 @@ a:focus-visible {
 }
 
 .app-layout__left {
-  flex: 0 0 33.333%;
-  width: 33.333%;
+  flex: 0 0 var(--connections-pane-width, 33.333%);
+  width: var(--connections-pane-width, 33.333%);
   min-width: 340px;
+  max-width: calc(100% - 320px);
   height: 100%;
   min-height: 0;
   overflow: hidden;
