@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   import type { RelationshipRow } from '#lib/types';
   import RelationshipRowItem from './RelationshipRowItem.svelte';
 
@@ -10,8 +11,6 @@
     showVisibilityToggles?: boolean;
     hiddenPeople?: readonly string[];
     hiddenEdgeRowIds?: readonly string[];
-    isViewingAll?: boolean;
-    onToggleViewAll?: () => void;
     onAddRow?: () => void;
     onUpdateRow?: (id: string, patch: Partial<Omit<RelationshipRow, 'id'>>) => void;
     onRemoveRow?: (id: string) => void;
@@ -27,8 +26,6 @@
     showVisibilityToggles = false,
     hiddenPeople = [],
     hiddenEdgeRowIds = [],
-    isViewingAll = false,
-    onToggleViewAll,
     onAddRow = () => {},
     onUpdateRow = () => {},
     onRemoveRow = () => {},
@@ -38,6 +35,16 @@
 
   let hiddenPeopleSet = $derived(new Set(hiddenPeople));
   let hiddenEdgeRowIdSet = $derived(new Set(hiddenEdgeRowIds));
+  let rowsEl = $state<HTMLUListElement | null>(null);
+
+  async function advanceRowFocus(index: number): Promise<void> {
+    if (index === rows.length - 1) {
+      onAddRow();
+    }
+    await tick();
+    const nextRow = rowsEl?.querySelectorAll<HTMLElement>('.row-item')[index + 1];
+    nextRow?.querySelector<HTMLInputElement>('input[type="text"]')?.focus();
+  }
 </script>
 
 <aside class="left-pane" aria-label="Relationship editor">
@@ -50,8 +57,8 @@
     </div>
   </header>
 
-  <ul class="left-pane__rows">
-    {#each rows as row (row.id)}
+  <ul class="left-pane__rows" bind:this={rowsEl}>
+    {#each rows as row, index (row.id)}
       <RelationshipRowItem
         {row}
         {knownNames}
@@ -63,6 +70,7 @@
         isEdgeHidden={hiddenEdgeRowIdSet.has(row.id)}
         onUpdate={(patch) => onUpdateRow(row.id, patch)}
         onRemove={() => onRemoveRow(row.id)}
+        onAdvanceFocus={() => void advanceRowFocus(index)}
         onTogglePersonHidden={onTogglePersonHidden}
         onToggleEdgeHidden={onToggleEdgeHidden ? () => onToggleEdgeHidden(row.id) : undefined}
       />
@@ -73,17 +81,6 @@
 
   <footer class="left-pane__footer">
     <button type="button" class="add-row-btn" onclick={() => onAddRow()}>+ Add Connection</button>
-    {#if onToggleViewAll}
-      <button
-        type="button"
-        class="view-all-btn"
-        class:is-active={isViewingAll}
-        aria-pressed={isViewingAll}
-        onclick={() => onToggleViewAll?.()}
-      >
-        View All
-      </button>
-    {/if}
   </footer>
 </aside>
 
@@ -158,8 +155,7 @@
     backdrop-filter: blur(8px);
   }
 
-  .add-row-btn,
-  .view-all-btn {
+  .add-row-btn {
     min-height: 38px;
     padding: 8px 13px;
     border: 1px solid transparent;
@@ -187,22 +183,4 @@
     background: var(--color-accent-hover);
   }
 
-  .view-all-btn {
-    flex: 0 0 auto;
-    color: #344054;
-    border-color: var(--color-border-strong);
-    background: var(--color-surface);
-  }
-
-  .view-all-btn:hover {
-    border-color: #aab4c3;
-    background: var(--color-surface-subtle);
-  }
-
-  .view-all-btn.is-active {
-    color: var(--color-accent);
-    border-color: #aebdf4;
-    background: var(--color-accent-soft);
-    box-shadow: inset 0 0 0 1px rgb(49 87 213 / 7%);
-  }
 </style>

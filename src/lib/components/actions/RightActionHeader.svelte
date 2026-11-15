@@ -7,8 +7,10 @@
     isExporting = false,
     showGeneratorActions = false,
     canExportStandalone = false,
+    isViewingAll = false,
     onReshuffle,
     onExportStandalone,
+    onToggleViewAll,
     onViewFormat = () => undefined,
     onSelectFormat = () => undefined
   }: {
@@ -16,8 +18,10 @@
     isExporting?: boolean;
     showGeneratorActions?: boolean;
     canExportStandalone?: boolean;
+    isViewingAll?: boolean;
     onReshuffle?: () => void;
     onExportStandalone?: () => void;
+    onToggleViewAll?: () => void;
     onViewFormat?: () => void;
     onSelectFormat?: (fmt: ExportFormat) => void;
   } = $props();
@@ -41,6 +45,15 @@
         <path d="M2 4h9M8 1l3 3-3 3M14 12H5M8 15l-3-3 3-3" />
       </svg>
       Reshuffle
+    </button>
+    <button
+      type="button"
+      class="action-btn view-all-btn"
+      class:is-active={isViewingAll}
+      aria-pressed={isViewingAll}
+      onclick={() => onToggleViewAll?.()}
+    >
+      View All
     </button>
     <button
       type="button"
@@ -112,14 +125,20 @@
   }
 
   .action-btn:hover:not(:disabled) {
-    border-color: var(--color-primary, #2563eb);
+    border-color: var(--color-primary, #16a34a);
     background: var(--color-surface-muted, #f4f7fb);
-    color: var(--color-primary, #1d4ed8);
+    color: var(--color-primary, #15803d);
   }
 
   .action-btn:focus-visible {
-    outline: 2px solid var(--color-primary, #2563eb);
+    outline: 2px solid var(--color-primary, #16a34a);
     outline-offset: 2px;
+  }
+
+  .view-all-btn.is-active {
+    border-color: var(--color-primary, #16a34a);
+    background: var(--color-primary-soft, #eafbef);
+    color: var(--color-primary, #15803d);
   }
 
   .action-btn:disabled {

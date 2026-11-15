@@ -116,8 +116,6 @@
       highlightedRowId={$generatorUiStore.highlightedRowId}
       highlightPulse={$generatorUiStore.highlightPulse}
       showVisibilityToggles={false}
-      isViewingAll={$generatorUiStore.isViewingAll}
-      onToggleViewAll={toggleGeneratorViewAll}
       onAddRow={() => addGeneratorRow()}
       onUpdateRow={updateGeneratorRow}
       onRemoveRow={removeGeneratorRow}
@@ -129,8 +127,10 @@
       isExporting={$generatorUiStore.isExporting}
       showGeneratorActions={true}
       canExportStandalone={displayedGraph !== null}
+      isViewingAll={$generatorUiStore.isViewingAll}
       onReshuffle={reshuffleGeneratorSeed}
       onExportStandalone={exportStandalone}
+      onToggleViewAll={toggleGeneratorViewAll}
       onViewFormat={viewFormat}
       onSelectFormat={(format) => updateGeneratorConfig({ exportFormat: format })}
     />

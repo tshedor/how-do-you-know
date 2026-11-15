@@ -73,7 +73,7 @@
     onchange={handlePageSizeChange}
   >
     {#each PAGE_SIZES as size (size)}
-      <option value={size}>{size}</option>
+      <option value={size}>{size === '8.3x11.7' ? 'A4' : size}</option>
     {/each}
   </select>
 </label>
@@ -83,25 +83,27 @@
     type="button"
     class="orientation-btn"
     class:is-active={settings.orientation === 'landscape'}
+    aria-label="Landscape"
+    title="Landscape"
     aria-pressed={settings.orientation === 'landscape'}
     onclick={() => onUpdate({ orientation: 'landscape' })}
   >
     <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
       <rect x="1.5" y="4.5" width="15" height="9" rx="1.5" />
     </svg>
-    <span>Landscape</span>
   </button>
   <button
     type="button"
     class="orientation-btn"
     class:is-active={settings.orientation === 'portrait'}
+    aria-label="Portrait"
+    title="Portrait"
     aria-pressed={settings.orientation === 'portrait'}
     onclick={() => onUpdate({ orientation: 'portrait' })}
   >
     <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
       <rect x="4.5" y="1.5" width="9" height="15" rx="1.5" />
     </svg>
-    <span>Portrait</span>
   </button>
 </div>
 
@@ -151,8 +153,8 @@
 
   .config-field input:focus-visible,
   .config-field select:focus-visible {
-    border-color: var(--color-primary, #2563eb);
-    outline: 2px solid var(--color-primary-soft, #dbeafe);
+    border-color: var(--color-primary, #16a34a);
+    outline: 2px solid var(--color-primary-soft, #eafbef);
     outline-offset: 0;
   }
 
@@ -172,9 +174,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
+    width: 1.95rem;
     min-height: 1.85rem;
-    padding: 0.35rem 0.55rem;
+    padding: 0.35rem;
     border: 0;
     border-radius: 0.35rem;
     background: transparent;
@@ -196,13 +198,13 @@
   }
 
   .orientation-btn.is-active {
-    background: var(--color-primary, #2563eb);
+    background: var(--color-primary, #16a34a);
     color: #ffffff;
     box-shadow: 0 1px 3px rgb(15 23 42 / 18%);
   }
 
   .orientation-btn:focus-visible {
-    outline: 2px solid var(--color-primary, #2563eb);
+    outline: 2px solid var(--color-primary, #16a34a);
     outline-offset: 2px;
   }
 
@@ -213,21 +215,4 @@
     stroke-width: 1.5;
   }
 
-  @media (max-width: 64rem) {
-    .orientation-btn span {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .orientation-btn {
-      width: 1.95rem;
-      padding: 0.35rem;
-    }
-  }
 </style>

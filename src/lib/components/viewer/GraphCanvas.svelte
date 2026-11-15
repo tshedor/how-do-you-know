@@ -58,27 +58,26 @@
 <style>
   .graph-canvas {
     position: relative;
-    display: flex;
+    display: block;
     flex: 1;
-    align-items: center;
-    justify-content: center;
     min-width: 0;
     min-height: 0;
     padding: 1.5rem;
     overflow: auto;
+    overscroll-behavior: contain;
     background: var(--color-canvas, #edf1f5);
+    scrollbar-width: thin;
   }
 
   .graph-canvas__stage {
     display: flex;
-    flex: 0 1 auto;
     align-items: center;
     justify-content: center;
-    min-width: 0;
-    min-height: 0;
-    max-width: 100%;
-    max-height: 100%;
-    overflow: hidden;
+    width: max-content;
+    min-width: 100%;
+    height: max-content;
+    min-height: 100%;
+    overflow: visible;
     border: 1px solid var(--color-border, #d5dce4);
     background: #ffffff;
     box-shadow:
@@ -89,8 +88,9 @@
 
   .graph-canvas__stage :global(svg) {
     display: block;
-    max-width: 100%;
-    max-height: 100%;
+    flex: none;
+    max-width: none;
+    max-height: none;
     width: auto;
     height: auto;
   }

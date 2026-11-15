@@ -121,6 +121,7 @@
         >
           <button
             type="button"
+            tabindex="-1"
             onmousedown={(event) => event.preventDefault()}
             onclick={() => selectOption(option)}
           >
@@ -170,7 +171,7 @@
   .combobox > input:focus-visible {
     border-color: var(--color-accent);
     outline: none;
-    box-shadow: 0 0 0 3px rgb(49 87 213 / 11%);
+    box-shadow: 0 0 0 3px rgb(22 163 74 / 11%);
   }
 
   .combobox__dropdown {
@@ -232,7 +233,7 @@
 
   .combobox__option > button:hover,
   .combobox__option.is-highlighted > button {
-    color: #203d9f;
+    color: #166534;
     background: var(--color-accent-soft);
   }
 

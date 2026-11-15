@@ -52,9 +52,9 @@
   .thumbnail-card {
     position: relative;
     display: block;
-    flex: 0 0 9rem;
-    width: 9rem;
-    height: 6.75rem;
+    flex: 0 0 4.5rem;
+    width: 4.5rem;
+    height: 3.375rem;
     padding: 0.35rem;
     overflow: hidden;
     border: 2px solid var(--color-border, #d5dce4);
@@ -70,19 +70,19 @@
   }
 
   .thumbnail-card:hover {
-    border-color: var(--color-primary, #2563eb);
+    border-color: var(--color-primary, #16a34a);
     transform: translateY(-1px);
   }
 
   .thumbnail-card:focus-visible {
-    outline: 2px solid var(--color-primary, #2563eb);
+    outline: 2px solid var(--color-primary, #16a34a);
     outline-offset: 2px;
   }
 
   .thumbnail-card.is-selected {
-    border-color: var(--color-primary, #2563eb);
+    border-color: var(--color-primary, #16a34a);
     box-shadow:
-      0 0 0 3px var(--color-primary-soft, #dbeafe),
+      0 0 0 3px var(--color-primary-soft, #eafbef),
       0 4px 10px rgb(15 23 42 / 10%);
   }
 
@@ -110,14 +110,14 @@
 
   .thumbnail-card__badge {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 0.25rem;
+    right: 0.25rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 1.4rem;
-    height: 1.4rem;
-    padding: 0 0.35rem;
+    min-width: 1rem;
+    height: 1rem;
+    padding: 0 0.25rem;
     border-radius: 999px;
     background: rgb(15 23 42 / 78%);
     color: #ffffff;
@@ -129,7 +129,7 @@
   }
 
   .thumbnail-card.is-selected .thumbnail-card__badge {
-    background: var(--color-primary, #2563eb);
+    background: var(--color-primary, #16a34a);
   }
 
   @media (max-width: 48rem) {
@@ -139,9 +139,9 @@
     }
 
     .thumbnail-card {
-      flex-basis: 7.5rem;
-      width: 7.5rem;
-      height: 5.75rem;
+      flex-basis: 3.75rem;
+      width: 3.75rem;
+      height: 2.875rem;
     }
   }
 </style>
