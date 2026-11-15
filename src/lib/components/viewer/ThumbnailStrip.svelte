@@ -1,25 +1,33 @@
 <script lang="ts">
-  import type { GeneratedGraph } from '#lib/types';
+  import type { RenderedGraph } from '#lib/types';
 
   let {
     graphs = [],
-    selectedGraphIndex = 0,
+    selectedIndex = 0,
+    isViewingAll = false,
     onSelect = () => undefined
   }: {
-    graphs?: GeneratedGraph[];
-    selectedGraphIndex?: number;
+    graphs?: RenderedGraph[];
+    selectedIndex?: number;
+    isViewingAll?: boolean;
     onSelect?: (index: number) => void;
   } = $props();
 </script>
 
-<nav aria-label="Generated graphs">
-  {#each graphs as graph (graph.index)}
-    <button
-      type="button"
-      aria-pressed={selectedGraphIndex === graph.index}
-      onclick={() => onSelect(graph.index)}
-    >
-      Graph {graph.index + 1}
-    </button>
-  {/each}
-</nav>
+{#if graphs.length > 1}
+  <nav class="thumbnail-strip" aria-label="Generated graphs">
+    {#each graphs as graph, i (graph.index)}
+      <button
+        type="button"
+        class="thumbnail-card"
+        class:is-selected={!isViewingAll && selectedIndex === i}
+        aria-pressed={!isViewingAll && selectedIndex === i}
+        aria-label="View graph {i + 1}"
+        onclick={() => onSelect(i)}
+      >
+        <span class="thumbnail-card__preview">{@html graph.svg}</span>
+        <span class="thumbnail-card__badge">{i + 1}</span>
+      </button>
+    {/each}
+  </nav>
+{/if}
