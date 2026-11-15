@@ -1,0 +1,31 @@
+{
+  "name": "partymap",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#lib/*": "./src/lib/*"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@viz-js/viz": "^3.31.0",
+    "fflate": "^0.8.3"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^4.0.1",
+    "@sveltejs/kit": "^3.2.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@types/node": "^24.0.0",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  }
+}
