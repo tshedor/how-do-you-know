@@ -46,7 +46,7 @@
       </li>
       <li>Take it offline. Print the graphs and have your guests fill out missing spaces.</li>
     </ol>
-    <p style="text-align:right"><a href="https://github.com/tshedor/partymap">Made by Tim</a></p>
+    <p style="text-align:right"><a href="https://github.com/tshedor/how-do-you-know">Made by Tim</a></p>
   </div>
 {/if}
 

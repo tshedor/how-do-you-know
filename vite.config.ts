@@ -7,7 +7,10 @@ export default defineConfig({
     sveltekit({
       adapter: adapter({
         fallback: 'index.html'
-      })
+      }),
+      paths: {
+        base: process.env.BASE_PATH ?? ''
+      }
     })
   ]
 });
