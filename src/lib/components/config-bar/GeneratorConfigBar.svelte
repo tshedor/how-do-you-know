@@ -2,7 +2,6 @@
   import type { GraphConfig } from '#lib/types';
   import { DEFAULT_CONFIG } from '#lib/constants/sampleData';
   import LayoutAndFontControls from './LayoutAndFontControls.svelte';
-  import PercentSliderPopover from './PercentSliderPopover.svelte';
 
   let {
     config = { ...DEFAULT_CONFIG },
@@ -27,6 +26,11 @@
     return Math.min(max, Math.max(min, Math.round(raw)));
   }
 
+  function clampFloat(raw: number, min: number, max: number, fallback: number): number {
+    if (!Number.isFinite(raw)) return fallback;
+    return Math.min(max, Math.max(min, raw));
+  }
+
   function handleGraphCountInput(event: Event): void {
     const input = event.currentTarget as HTMLInputElement;
     onUpdateConfig({
@@ -39,6 +43,18 @@
     onUpdateConfig({
       maxConnectionsPerNode: clampInt(Number.parseFloat(input.value), 1, 20, 1)
     });
+  }
+
+  function handleShownConnectionsInput(event: Event): void {
+    const input = event.currentTarget as HTMLInputElement;
+    const shown = clampFloat(Number.parseFloat(input.value), 0, 1, 1);
+    onUpdateConfig({ hiddenEdgeLabelRatio: 1 - shown });
+  }
+
+  function handleShownNamesInput(event: Event): void {
+    const input = event.currentTarget as HTMLInputElement;
+    const shown = clampFloat(Number.parseFloat(input.value), 0, 1, 1);
+    onUpdateConfig({ hiddenNodeLabelRatio: 1 - shown });
   }
 </script>
 
@@ -101,33 +117,51 @@
     </label>
 
     <label class="config-field">
-      <span class="config-field__label">Max Relationships</span>
+      <span class="config-field__label">Max Connections</span>
       <input
         type="number"
         min="1"
         max="20"
         step="1"
         value={config.maxConnectionsPerNode}
-        aria-label="Max relationships"
+        aria-label="Max connections"
         oninput={handleMaxConnectionsInput}
       />
     </label>
 
-    <div class="config-field">
-      <PercentSliderPopover
-        label="Shown Connections"
-        value={1 - config.hiddenEdgeLabelRatio}
-        onChange={(val) => onUpdateConfig({ hiddenEdgeLabelRatio: 1 - val })}
-      />
-    </div>
+    <label class="config-field">
+      <span class="config-field__label">Shown Connections</span>
+      <div class="range-control">
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={1 - config.hiddenEdgeLabelRatio}
+          style:--range-progress={`${(1 - config.hiddenEdgeLabelRatio) * 100}%`}
+          aria-label="Shown connections"
+          oninput={handleShownConnectionsInput}
+        />
+        <span class="range-control__value">{Math.round((1 - config.hiddenEdgeLabelRatio) * 100)}%</span>
+      </div>
+    </label>
 
-    <div class="config-field">
-      <PercentSliderPopover
-        label="Shown Names"
-        value={1 - config.hiddenNodeLabelRatio}
-        onChange={(val) => onUpdateConfig({ hiddenNodeLabelRatio: 1 - val })}
-      />
-    </div>
+    <label class="config-field">
+      <span class="config-field__label">Shown Names</span>
+      <div class="range-control">
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={1 - config.hiddenNodeLabelRatio}
+          style:--range-progress={`${(1 - config.hiddenNodeLabelRatio) * 100}%`}
+          aria-label="Shown names"
+          oninput={handleShownNamesInput}
+        />
+        <span class="range-control__value">{Math.round((1 - config.hiddenNodeLabelRatio) * 100)}%</span>
+      </div>
+    </label>
 
     <LayoutAndFontControls settings={config} onUpdate={onUpdateConfig} onReset={onResetConfig} />
   </div>
@@ -172,10 +206,10 @@
     white-space: nowrap;
   }
 
-  .config-field input {
-    width: 4.75rem;
+  .config-field > input {
+    width: 2.9rem;
     height: 2.35rem;
-    padding: 0.4rem 0.5rem;
+    padding: 0.5rem 0.6rem;
     border: 1px solid var(--color-border, #d5dce4);
     border-radius: 0.45rem;
     background: var(--color-surface, #ffffff);
@@ -184,22 +218,57 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .config-field input:hover {
+  .config-field > input:hover {
     border-color: var(--color-text-muted, #94a3b8);
   }
 
-  .config-field input:focus-visible {
+  .config-field > input:focus-visible {
     border-color: var(--color-primary, #16a34a);
     outline: 2px solid var(--color-primary-soft, #eafbef);
     outline-offset: 0;
   }
 
+  .range-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.35rem;
+  }
+
+  .range-control input {
+    width: 7rem;
+    margin: 0;
+    background: var(--color-surface, #ffffff);
+    accent-color: var(--color-primary, #16a34a);
+    cursor: pointer;
+  }
+
+  .range-control__value {
+    min-width: 2.75rem;
+    color: var(--color-primary, #15803d);
+    font-size: 0.875rem;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
   @media (max-width: 48rem) {
     .config-bar {
       z-index: 70;
-      justify-content: flex-end;
-      min-height: 3.5rem;
-      padding: 0.5rem 0.75rem;
+      height: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .config-bar .mobile-toolbar-toggle {
+      position: fixed;
+      top: 0.5rem;
+      left: 0.75rem;
+      z-index: 75;
     }
 
     .config-bar.is-open {

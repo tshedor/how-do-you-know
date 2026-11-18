@@ -6,7 +6,7 @@
   import LeftPane from '#lib/components/left/LeftPane.svelte';
   import GraphCanvas from '#lib/components/viewer/GraphCanvas.svelte';
   import ThumbnailStrip from '#lib/components/viewer/ThumbnailStrip.svelte';
-  import { downloadGraphsZip, openSingleGraphInTab } from '#lib/export';
+  import { downloadGraphsZip, openSingleGraphInTab, printGraphs } from '#lib/export';
   import { GraphGenerator } from '#lib/graph/GraphGenerator';
   import {
     addGeneratorRow,
@@ -126,10 +126,23 @@
       setGeneratorExporting(false);
     }
   }
+
+  async function onPrint(): Promise<void> {
+    if ($generatorUiStore.isExporting || renderedGraphs.length === 0) return;
+    setGeneratorExporting(true);
+    errorMessage = null;
+    try {
+      await printGraphs(renderedGraphs, renderedViewAll, $generatorConfigStore);
+    } catch (error) {
+      errorMessage = error instanceof Error ? error.message : 'Unable to print the graphs.';
+    } finally {
+      setGeneratorExporting(false);
+    }
+  }
 </script>
 
 <svelte:head>
-  <title>PartyMap</title>
+  <title>How Do You Know</title>
 </svelte:head>
 
 <main class="app-layout">
@@ -167,6 +180,12 @@
       onToggleViewAll={toggleGeneratorViewAll}
       onViewFormat={viewCurrentGraph}
       onSelectFormat={(format) => updateGeneratorConfig({ exportFormat: format })}
+      onPrint={onPrint}
+    />
+    <GeneratorConfigBar
+      config={$generatorConfigStore}
+      onUpdateConfig={updateGeneratorConfig}
+      onResetConfig={resetGeneratorConfig}
     />
     <ThumbnailStrip
       graphs={renderedGraphs}
@@ -180,11 +199,6 @@
       {errorMessage}
       onPersonClick={highlightGeneratorFirstRowForPerson}
       onEdgeClick={highlightGeneratorRowById}
-    />
-    <GeneratorConfigBar
-      config={$generatorConfigStore}
-      onUpdateConfig={updateGeneratorConfig}
-      onResetConfig={resetGeneratorConfig}
     />
   </section>
 </main>

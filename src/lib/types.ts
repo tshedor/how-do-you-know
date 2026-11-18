@@ -1,4 +1,4 @@
-export type PageSize = '8.5x11' | '11x17' | '8.3x11.7';
+export type PageSize = '8.5x11' | '11x17' | '8.3x11.7' | '11.7x16.5';
 export type Orientation = 'landscape' | 'portrait';
 export type ExportFormat = 'PNG' | 'SVG' | 'DOT';
 export type RelationshipField = 'from' | 'to' | 'relation';

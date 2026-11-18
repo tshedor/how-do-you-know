@@ -3,6 +3,7 @@
   import { parseRelationshipsCsv, type RelationshipCsvRow } from '#lib/csv';
   import type { RelationshipField, RelationshipRow } from '#lib/types';
   import RelationshipRowItem from './RelationshipRowItem.svelte';
+  import HowToPlayModal from './HowToPlayModal.svelte';
 
   const MIN_PANE_WIDTH = 340;
   const MIN_GRAPH_WIDTH = 320;
@@ -49,6 +50,7 @@
   let paneEl = $state<HTMLElement | null>(null);
   let fileInputEl = $state<HTMLInputElement | null>(null);
   let isDrawerOpen = $state(false);
+  let isHowToPlayOpen = $state(false);
   let importError = $state<string | null>(null);
   let resizePointerId: number | null = null;
   let resizeStartX = 0;
@@ -67,7 +69,11 @@
 
   function handleWindowKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
-      isDrawerOpen = false;
+      if (isHowToPlayOpen) {
+        closeHowToPlay();
+      } else {
+        isDrawerOpen = false;
+      }
     }
   }
 
@@ -112,7 +118,11 @@
     );
   }
 
-  async function handleCsvImport(event: Event): Promise<void> {
+  function closeHowToPlay(): void {
+    isHowToPlayOpen = false;
+  }
+
+async function handleCsvImport(event: Event): Promise<void> {
     const input = event.currentTarget;
     if (!(input instanceof HTMLInputElement) || !onImportRows) return;
     const file = input.files?.[0];
@@ -199,11 +209,32 @@
     </button>
   </div>
   <header class="left-pane__header">
-    <div class="left-pane__columns" aria-hidden="true">
-      <span>Person A</span>
-      <span>Person B</span>
-      <span></span>
-      <span class="left-pane__relationship-heading">Relationship</span>
+    <div class="left-pane__title-row">
+      <span class="left-pane__title">How Do You Know: The Game</span>
+      <button
+        type="button"
+        class="left-pane__help-btn"
+        aria-label="How does this game work?"
+        aria-haspopup="dialog"
+        title="How does this game work?"
+        onclick={() => (isHowToPlayOpen = true)}
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -265,6 +296,8 @@
   ></button>
 </aside>
 
+<HowToPlayModal open={isHowToPlayOpen} onClose={closeHowToPlay} />
+
 <style>
   .left-pane {
     position: relative;
@@ -286,22 +319,43 @@
     background: var(--color-surface-subtle);
   }
 
-  .left-pane__columns {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 30px;
-    gap: 8px;
+  .left-pane__title-row {
+    display: flex;
     align-items: center;
-    color: var(--color-text-muted);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.055em;
-    line-height: 1.2;
-    text-transform: uppercase;
+    gap: 0.6rem;
   }
 
-  .left-pane__relationship-heading {
-    grid-column: 1 / 3;
-    margin-left: 20px;
+  .left-pane__title {
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  .left-pane__help-btn {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .left-pane__help-btn:hover,
+  .left-pane__help-btn:focus-visible {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
   }
 
   .left-pane__rows {
@@ -506,7 +560,11 @@
     }
 
     .left-pane__header {
-      margin-top: 3.75rem;
+      display: none;
+    }
+
+    .left-pane__rows {
+      padding-top: 3.75rem;
     }
 
     .left-pane__footer {

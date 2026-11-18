@@ -3,7 +3,8 @@ import type { Orientation, PageSize } from '#lib/types';
 const BASE_PAGE_SIZES_INCHES: Record<PageSize, { width: number; height: number }> = {
   '8.5x11': { width: 8.5, height: 11 },
   '11x17': { width: 11, height: 17 },
-  '8.3x11.7': { width: 8.3, height: 11.7 }
+  '8.3x11.7': { width: 8.3, height: 11.7 },
+  '11.7x16.5': { width: 11.7, height: 16.5 }
 };
 
 export interface PageDimensions {

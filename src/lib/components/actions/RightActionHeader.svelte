@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ExportFormat } from '#lib/types';
   import ExportSplitButton from './ExportSplitButton.svelte';
+  import HowToPlayModal from '#lib/components/left/HowToPlayModal.svelte';
 
   let {
     exportFormat = 'PNG',
@@ -12,6 +13,7 @@
     onReshuffle,
     onExportStandalone,
     onExportGraphs,
+    onPrint,
     onToggleViewAll,
     onViewFormat = () => undefined,
     onSelectFormat = () => undefined
@@ -25,6 +27,7 @@
     onReshuffle?: () => void;
     onExportStandalone?: () => void;
     onExportGraphs?: () => void;
+    onPrint?: () => void;
     onToggleViewAll?: () => void;
     onViewFormat?: (format: ExportFormat) => void;
     onSelectFormat?: (fmt: ExportFormat) => void;
@@ -32,10 +35,15 @@
 
   let viewFormat = $state<ExportFormat>('PNG');
   let isDrawerOpen = $state(false);
+  let isHowToPlayOpen = $state(false);
 
   function handleWindowKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
-      isDrawerOpen = false;
+      if (isHowToPlayOpen) {
+        isHowToPlayOpen = false;
+      } else {
+        isDrawerOpen = false;
+      }
     }
   }
 </script>
@@ -92,11 +100,19 @@
         class="action-btn view-all-btn"
         class:is-active={isViewingAll}
         aria-pressed={isViewingAll}
+        aria-label="In case you need a key"
+        title="In case you need a key"
         onclick={() => onToggleViewAll?.()}
       >
         View All
       </button>
-      <button type="button" class="action-btn" onclick={() => onReshuffle?.()}>
+      <button
+        type="button"
+        class="action-btn"
+        aria-label="Try your luck and regenerate the graphs"
+        title="Try your luck and regenerate the graphs"
+        onclick={() => onReshuffle?.()}
+      >
         <svg
           width="16"
           height="16"
@@ -116,6 +132,8 @@
       <button
         type="button"
         class="action-btn export-btn"
+        aria-label="Edit the map directly. Updates will not change this generation."
+        title="Edit the map directly. Updates will not change this generation."
         disabled={!canExportStandalone}
         onclick={() => onExportStandalone?.()}
       >
@@ -150,12 +168,67 @@
         actionLabel="Export"
         isExporting={isExporting}
         disabled={!canViewGraph}
+        actionTitle="Download all generated graphs"
+        actionAriaLabel="Download all generated graphs"
         onAction={() => onExportGraphs?.()}
         onSelectFormat={onSelectFormat}
       />
+      <button
+        type="button"
+        class="action-btn print-btn"
+        disabled={!canViewGraph || isExporting}
+        onclick={() => onPrint?.()}
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M5 2h6v4H5zM3 6h10v8H3z" />
+          <path d="M7 10h2" />
+        </svg>
+        Print
+      </button>
     {/if}
+    <button
+      type="button"
+      class="action-btn how-to-play-btn"
+      aria-label="Learn how this game works"
+      title="Learn how this game works"
+      onclick={() => {
+        isDrawerOpen = false;
+        isHowToPlayOpen = true;
+      }}
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+      How to Play
+    </button>
   </div>
 </header>
+
+<HowToPlayModal open={isHowToPlayOpen} onClose={() => (isHowToPlayOpen = false)} />
 
 <style>
   .right-action-header {
@@ -234,6 +307,10 @@
     flex: 0 0 auto;
   }
 
+  .how-to-play-btn {
+    display: none;
+  }
+
   @media (max-width: 48rem) {
     .right-action-header {
       z-index: 70;
@@ -290,6 +367,13 @@
 
     .right-action-header__content :global(.split-cta__main) {
       flex: 1;
+    }
+
+    .right-action-header__content .how-to-play-btn {
+      display: inline-flex;
+      margin-top: auto;
+      padding-top: 0.65rem;
+      padding-bottom: 0.65rem;
     }
   }
 

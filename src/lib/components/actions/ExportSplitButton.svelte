@@ -7,6 +7,8 @@
     secondary = false,
     isExporting = false,
     disabled = false,
+    actionTitle,
+    actionAriaLabel,
     onAction,
     onSelectFormat
   }: {
@@ -15,6 +17,8 @@
     secondary?: boolean;
     isExporting?: boolean;
     disabled?: boolean;
+    actionTitle?: string;
+    actionAriaLabel?: string;
     onAction: () => void;
     onSelectFormat: (fmt: ExportFormat) => void;
   } = $props();
@@ -50,6 +54,8 @@
     type="button"
     class="action-btn split-cta__main"
     disabled={disabled}
+    aria-label={actionAriaLabel}
+    title={actionTitle}
     onclick={() => onAction()}
   >
     {isExporting ? 'Generating...' : `${actionLabel} ${format}`}

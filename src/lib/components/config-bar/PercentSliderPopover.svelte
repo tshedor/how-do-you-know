@@ -136,11 +136,11 @@
 
   .percent-control__popover {
     position: absolute;
-    right: 0;
-    bottom: calc(100% + 8px);
+    left: 0;
+    top: calc(100% + 8px);
     z-index: 40;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 0.75rem;
     width: 15rem;
     padding: 0.85rem;

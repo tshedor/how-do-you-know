@@ -1,4 +1,4 @@
-# PartyMap contributor guide
+# How Do You Know contributor guide
 
 ## Commands
 

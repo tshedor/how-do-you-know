@@ -21,7 +21,7 @@ export interface GeneratorUrlState {
 
 const PAYLOAD_VERSION = 1;
 
-const PAGE_SIZES: readonly PageSize[] = ['8.5x11', '11x17', '8.3x11.7'];
+const PAGE_SIZES: readonly PageSize[] = ['8.5x11', '11x17', '8.3x11.7', '11.7x16.5'];
 const ORIENTATIONS: readonly Orientation[] = ['landscape', 'portrait'];
 const EXPORT_FORMATS: readonly ExportFormat[] = ['PNG', 'SVG', 'DOT'];
 

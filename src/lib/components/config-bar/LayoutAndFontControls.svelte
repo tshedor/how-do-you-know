@@ -11,7 +11,7 @@
     onReset: () => void;
   } = $props();
 
-  const PAGE_SIZES = ['8.5x11', '11x17', '8.3x11.7'] as const;
+  const PAGE_SIZES = ['8.5x11', '11x17', '8.3x11.7', '11.7x16.5'] as const;
 
   function clampInt(raw: number, min: number, max: number, fallback: number): number {
     if (!Number.isFinite(raw)) return fallback;
@@ -42,7 +42,7 @@
 </script>
 
 <label class="config-field">
-  <span class="config-field__label">Name Font Size</span>
+  <span class="config-field__label">Name Size</span>
   <div class="font-size-control">
     <input
       type="range"
@@ -54,12 +54,11 @@
       aria-label="Name font size"
       oninput={handleNodeFontSizeInput}
     />
-    <output aria-label="Name font size in points">{settings.nodeFontSize}</output>
   </div>
 </label>
 
 <label class="config-field">
-  <span class="config-field__label">Connection Font Size</span>
+  <span class="config-field__label">Connection Size</span>
   <div class="font-size-control">
     <input
       type="range"
@@ -71,7 +70,6 @@
       aria-label="Connection font size"
       oninput={handleEdgeFontSizeInput}
     />
-    <output aria-label="Connection font size in points">{settings.edgeFontSize}</output>
   </div>
 </label>
 
@@ -83,7 +81,9 @@
     onchange={handlePageSizeChange}
   >
     {#each PAGE_SIZES as size (size)}
-      <option value={size}>{size === '8.3x11.7' ? 'A4' : size}</option>
+      <option value={size}>
+        {size === '8.3x11.7' ? 'A4' : size === '11.7x16.5' ? 'A3' : size}
+      </option>
     {/each}
   </select>
 </label>
@@ -123,7 +123,10 @@
   aria-label="Reset settings to defaults"
   onclick={onReset}
 >
-  Reset
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 9a6 6 0 1 0 6-6c-2 0-3.8 1-4.9 2.5L3 7" />
+      <path d="M3 3v4h4" />
+    </svg>
 </button>
 
 <style>
@@ -168,14 +171,6 @@
     background: var(--color-surface, #ffffff);
     accent-color: var(--color-primary, #16a34a);
     cursor: pointer;
-  }
-
-  .font-size-control output {
-    min-width: 2rem;
-    color: var(--color-text, #243447);
-    font-size: 0.8125rem;
-    font-variant-numeric: tabular-nums;
-    text-align: right;
   }
 
   .config-field select:hover {
@@ -252,18 +247,29 @@
   .reset-settings-btn {
     align-self: flex-end;
     min-height: 2.35rem;
-    padding: 0.4rem 0.75rem;
+    min-width: 2.35rem;
+    padding: 0.4rem;
     border: 1px solid var(--color-border, #d5dce4);
     border-radius: 0.45rem;
     background: var(--color-surface, #ffffff);
     color: var(--color-text-muted, #64748b);
-    font-size: 0.8125rem;
-    font-weight: 650;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .reset-settings-btn:hover {
     border-color: var(--color-primary, #16a34a);
     color: var(--color-primary, #15803d);
+  }
+
+  .reset-settings-btn:focus-visible {
+    outline: 2px solid var(--color-primary, #16a34a);
+    outline-offset: 2px;
+  }
+
+  .reset-settings-btn svg {
+    flex: 0 0 auto;
   }
 
   @media (max-width: 48rem) {

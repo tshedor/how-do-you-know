@@ -99,8 +99,20 @@
   @media (max-width: 48rem) {
     .config-bar {
       z-index: 70;
-      min-height: 3.5rem;
-      padding: 0.5rem 0.75rem;
+      height: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .config-bar .mobile-toolbar-toggle {
+      position: fixed;
+      top: 0.5rem;
+      left: 0.75rem;
+      z-index: 75;
     }
 
     .config-bar.is-open {

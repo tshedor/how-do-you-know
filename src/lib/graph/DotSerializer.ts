@@ -8,7 +8,8 @@ import type {
 const PAGE_SIZES: Record<PageSize, readonly [number, number]> = {
   '8.5x11': [8.5, 11],
   '11x17': [11, 17],
-  '8.3x11.7': [8.3, 11.7]
+  '8.3x11.7': [8.3, 11.7],
+  '11.7x16.5': [11.7, 16.5]
 };
 
 export function getPageDimensions(
@@ -54,6 +55,7 @@ export class DotSerializer {
       `  size="${width},${height}!";`,
       '  ratio="fill";',
       '  margin=0;',
+      `  pad="0.5,0.5";`,
       `  node [shape=circle, fontsize=${settings.nodeFontSize}, width=4.5, height=2, fixedsize=false, penwidth=3]`,
       `  edge [penwidth=5, style=tapered, fontsize=${settings.edgeFontSize}]`,
       `  fontsize="${settings.nodeFontSize}";`,

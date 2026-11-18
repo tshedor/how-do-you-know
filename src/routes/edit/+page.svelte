@@ -97,7 +97,7 @@
 </script>
 
 <svelte:head>
-  <title>Edit PartyMap</title>
+  <title>Edit Graph | How Do You Know</title>
 </svelte:head>
 
 <main class="app-layout">
@@ -132,17 +132,17 @@
       canViewGraph={renderedGraph !== null}
       onViewFormat={handleViewSingle}
     />
+    <StandaloneConfigBar
+      settings={$standaloneSettingsStore}
+      onUpdateSettings={updateStandaloneSettings}
+      onResetSettings={resetStandaloneSettings}
+    />
     <GraphCanvas
       graph={renderedGraph}
       {isRendering}
       {errorMessage}
       onPersonClick={highlightStandaloneFirstRowForPerson}
       onEdgeClick={highlightStandaloneRowById}
-    />
-    <StandaloneConfigBar
-      settings={$standaloneSettingsStore}
-      onUpdateSettings={updateStandaloneSettings}
-      onResetSettings={resetStandaloneSettings}
     />
   </section>
 </main>
